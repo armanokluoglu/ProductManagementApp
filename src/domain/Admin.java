@@ -1,12 +1,13 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 
 public class Admin extends User {
 	
-	private List<Product> products;
-	private List<User> managers;
+	private List<Product> products = new ArrayList<>();
+	private List<User> managers = new ArrayList<>();
 	
 	public Admin(String username, String password) {
 		super(username, password);
@@ -33,11 +34,14 @@ public class Admin extends User {
 	}
 	
 	public User createManager(String username, String password) {
-		return null;
+
+		User manager = new Manager(username,password);
+		managers.add(manager);
+		return manager;
 	}
 	
 	public void assignManagerToAssembly(User manager, Product assembly) {
-		
+		((Manager)manager).setProduct(assembly);
 	}
 
 	public List<Product> getProducts() {

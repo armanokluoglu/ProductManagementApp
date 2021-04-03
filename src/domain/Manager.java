@@ -23,6 +23,12 @@ public class Manager extends User {
 		((Assembly) product).addProduct(part);
 		return part;
 	}
+
+	public Product addPart(Product part) {
+		Product product = getProduct();
+		((Assembly) product).addProduct(part);
+		return part;
+	}
 	
 	public Product createAssembly(String name, long number) {
 		Product assembly = new Assembly(name, number);
@@ -30,13 +36,21 @@ public class Manager extends User {
 		((Assembly) product).addProduct(assembly);
 		return assembly;
 	}
+
+	public Product addAssembly(Product assembly) {
+		Product product = getProduct();
+		((Assembly) product).addProduct(assembly);
+		return assembly;
+	}
 	
 	public User createEmployee(String username, String password) {
-		return null;
+		User employee = new Employee(username,password);
+		employees.add(employee);
+		return employee;
 	}
 	
 	public void assignEmployeeToPart(User employee, Product part) {
-		
+		((Employee)employee).setPart(part);
 	}
 
 	public List<User> getEmployees() {
