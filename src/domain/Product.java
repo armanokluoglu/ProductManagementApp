@@ -33,6 +33,7 @@ public abstract class Product implements StatusChangeCallback {
 		StatusState newStatus = null;
 		if(status == getStatus().getEnum()) {
 			System.out.println("Status of '" + getName() + "' not changed as it was already: " + getStatus().toString());
+			System.out.println();
 			return;
 		} else if(status == Status.NOT_STARTED) {
 			newStatus = new NotStartedState(this);
@@ -42,6 +43,7 @@ public abstract class Product implements StatusChangeCallback {
 			newStatus = new CompleteState(this);
 		}
 		System.out.println("Status of '" + getName() + "' changed to: " + newStatus.toString());
+		System.out.println();
 		setStatus(newStatus);
 		callback.onChildStatusChange();
 	}

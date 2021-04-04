@@ -66,6 +66,24 @@ public class UserRepository {
         }
         return admins;
     }
+    
+    public List<User> findManagers(){
+        List<User> managers = new ArrayList<>();
+        for(User user: users){
+            if (user instanceof Manager)
+            	managers.add(user);
+        }
+        return managers;
+    }
+    
+    public List<User> findEmployees(){
+        List<User> employees = new ArrayList<>();
+        for(User user: users){
+            if (user instanceof Employee)
+            	employees.add(user);
+        }
+        return employees;
+    }
 
     public User save(User user){
         users.add(user);

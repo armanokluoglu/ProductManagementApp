@@ -12,6 +12,11 @@ public class Employee extends User {
 	}
 	
 	public void changeStatusOfPart(Status status) {
+		Product part = getPart();
+		if(part == null) {
+			System.out.println("Employee does not have an assigned part.");
+			return;
+		}
 		getPart().changeStatus(status);
 	}
 

@@ -15,7 +15,7 @@ public class Manager extends User {
 	}
 
 	public JSONObject getProductTree() {
-		return null;
+		return ((Assembly) product).getProductTree();
 	}
 	
 	public Product createPart(CatalogueEntry entry) {

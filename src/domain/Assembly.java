@@ -18,7 +18,7 @@ public class Assembly extends Product {
 
 	public void addProduct(Product product) {
 		List<Product> products = getProducts();
-		product.setCallback(this); //CHANGED FROM getCallback()
+		product.setCallback(this);
 		products.add(product);
 		setProducts(products);
 	}
@@ -56,7 +56,7 @@ public class Assembly extends Product {
 				assemblies.add(((Assembly)product).getProductTree());
 		}
 		productTree.put("PARTS",parts);
-		productTree.put("ASSEMBLİES",assemblies);
+		productTree.put("ASSEMBLIES",assemblies);
 		return productTree;
 	}
 
