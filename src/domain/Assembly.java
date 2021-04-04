@@ -34,7 +34,30 @@ public class Assembly extends Product {
 	}
 
 	public JSONObject getProductTree() {
-		return null;
+
+		List<Product> products = getProducts();
+		List<JSONObject> parts = new ArrayList<>();
+		List<JSONObject> assemblies = new ArrayList<>();
+
+		JSONObject productTree = new JSONObject();
+		productTree.put("number",getNumber());
+		productTree.put("name",getName());
+		productTree.put("status",getStatus());
+		productTree.put("cost",getCost());
+		for(Product product:products){
+			if(product instanceof Part){
+				JSONObject part = new JSONObject();
+				part.put("number",product.getNumber());
+				part.put("name",product.getName());
+				part.put("status",product.getStatus());
+				part.put("cost",product.getCost());
+				parts.add(part);
+			}else
+				assemblies.add(((Assembly)product).getProductTree());
+		}
+		productTree.put("PARTS",parts);
+		productTree.put("ASSEMBLİES",assemblies);
+		return productTree;
 	}
 
 	@Override

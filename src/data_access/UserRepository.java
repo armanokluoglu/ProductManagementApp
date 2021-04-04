@@ -1,11 +1,13 @@
 package data_access;
 
+import domain.Admin;
 import domain.Employee;
 import domain.Manager;
 import domain.User;
 import utilities.NotFoundException;
 import utilities.PasswordIncorrectException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
@@ -28,6 +30,7 @@ public class UserRepository {
         }
         throw new NotFoundException();
     }
+
     public User findByUserName(String userName) throws NotFoundException{
         for(User user: users){
             if(user.getUsername().equals(userName) ){
@@ -54,6 +57,16 @@ public class UserRepository {
         }
         throw new NotFoundException();
     }
+
+    public List<User> findAdmins(){
+        List<User> admins = new ArrayList<>();
+        for(User user: users){
+            if (user instanceof Admin)
+                admins.add(user);
+        }
+        return admins;
+    }
+
     public User save(User user){
         users.add(user);
         return user;

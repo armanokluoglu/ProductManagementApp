@@ -12,7 +12,20 @@ public class Admin extends User {
 	public Admin(String username, String password) {
 		super(username, password);
 	}
-	
+
+	@Override
+	public JSONObject getJson() {
+		JSONObject usersJson = new JSONObject();
+		List<JSONObject> managersJson = new ArrayList<>();
+		for(User manager:managers){
+			managersJson.add(((Manager)manager).getJson());
+		}
+		usersJson.put("Id",getId());
+		usersJson.put("Username",getUsername());
+		usersJson.put("MANAGERS",managersJson);
+		return usersJson;
+	}
+
 	public List<User> getAllManagers() {
 		return null;
 	}

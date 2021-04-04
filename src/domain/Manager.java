@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 import utilities.CatalogueEntry;
@@ -12,7 +13,7 @@ public class Manager extends User {
 	public Manager(String username, String password) {
 		super(username, password);
 	}
-	
+
 	public JSONObject getProductTree() {
 		return null;
 	}
@@ -67,6 +68,21 @@ public class Manager extends User {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	@Override
+	public JSONObject getJson() {
+		JSONObject managerJson = new JSONObject();
+		List<JSONObject> employeesJson = new ArrayList<>();
+		JSONObject productJson = ((Assembly)product).getProductTree();
+		for(User employee:employees){
+			employeesJson.add(((Employee)employee).getJson());
+		}
+		managerJson.put("Id",getId());
+		managerJson.put("Username",getUsername());
+		managerJson.put("PRODUCT",productJson);
+		managerJson.put("EMPLOYEES",employeesJson);
+		return managerJson;
 	}
 	
 }

@@ -1,5 +1,7 @@
 package domain;
 
+import org.json.JSONObject;
+
 public abstract class User {
 
 	private int id;
@@ -39,5 +41,7 @@ public abstract class User {
 	public static void setId_counter(int id_counter) {
 		User.id_counter = id_counter;
 	}
+
+	public abstract JSONObject getJson();
 	
 }

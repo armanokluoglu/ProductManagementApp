@@ -85,4 +85,5 @@ public abstract class Product implements StatusChangeCallback {
 	public void setCallback(StatusChangeCallback callback) {
 		this.callback = callback;
 	}
+
 }

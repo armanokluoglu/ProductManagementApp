@@ -1,8 +1,10 @@
 package view;
 
+import data_access.InputOutputOperations;
 import data_access.ProductRepository;
 import data_access.UserRepository;
 import domain.*;
+import org.json.JSONObject;
 import utilities.CatalogueEntry;
 import utilities.Status;
 
@@ -18,12 +20,15 @@ public class ProductManagementApp {
 
 		CatalogueEntry entry = new CatalogueEntry("part", 456, 10);
 		CatalogueEntry entry2 = new CatalogueEntry("part2", 457, 10);
-
+		CatalogueEntry entry3 = new CatalogueEntry("part3", 458, 10);
+		CatalogueEntry entry4 = new CatalogueEntry("part4", 459, 10);
 		Product ass = new Assembly("ass", 123);
 		Product ass2 = new Assembly("ass2", 124);
 		((Assembly) ass).addProduct(ass2);
 		Product part = new Part(entry);
 		Product part2 = new Part(entry2);
+		Product part3 = new Part(entry3);
+		Product part4 = new Part(entry4);
 		((Assembly) ass2).addProduct(part);
 		((Assembly) ass2).addProduct(part2);
 		//part.changeStatus(Status.COMPLETE);
@@ -42,10 +47,19 @@ public class ProductManagementApp {
 		((Admin)admin).setProducts(new ArrayList<>(Arrays.asList(ass)));
 
 		List<User> users = new ArrayList<>(Arrays.asList(admin,manager,employee1,employee2));
-		List<Product> products = new ArrayList<>(Arrays.asList(ass,ass2,part,part2));
+		List<Product> products = new ArrayList<>(Arrays.asList(ass,ass2,part,part2,part3,part4));
+
+		JSONObject x = ((Assembly) ass).getProductTree();
+		System.out.println(x.toString());
 		UserRepository userRepository = new UserRepository(users);
 		ProductRepository productRepository = new ProductRepository(products);
 		ProductManagement productManagement = new ProductManagement(userRepository,productRepository);
+		List<Product> lones = productRepository.findLonelyParts();
+		JSONObject xx = ((Admin)admin).getJson();
+		InputOutputOperations io = new InputOutputOperations(productRepository,userRepository);
+		io.outputProducts();
+		io.outputUsers();
+
 		productManagement.start();
 	}
 
