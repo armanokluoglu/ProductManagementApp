@@ -18,6 +18,10 @@ public class Manager extends User {
 		return ((Assembly) product).getProductTree();
 	}
 	
+	public void printProductTree() {
+		((Assembly) product).printProduct(getProductTree(), 0);
+	}
+	
 	public Product createPart(CatalogueEntry entry) {
 		Product part = new Part(entry);
 		Product product = getProduct();
@@ -31,17 +35,24 @@ public class Manager extends User {
 		return part;
 	}
 	
-	public Product createAssembly(String name, long number) {
-		Product assembly = new Assembly(name, number);
-		Product product = getProduct();
-		((Assembly) product).addProduct(assembly);
-		return assembly;
-	}
+//	public Product createAssembly(String name, long number) {
+//		Product assembly = new Assembly(name, number);
+//		Product product = getProduct();
+//		((Assembly) product).addProduct(assembly);
+//		return assembly;
+//	}
 
 	public Product addAssembly(Product assembly) {
 		Product product = getProduct();
 		((Assembly) product).addProduct(assembly);
 		return assembly;
+	}
+	
+	public Product addProductToAssembly(Product prod, int mainAssemblyNumber) {
+		Product product = getProduct();
+		Product mainAssembly = findAssemblyConnectedToProduct(mainAssemblyNumber, product);
+		((Assembly) mainAssembly).addProduct(prod);
+		return mainAssembly;
 	}
 	
 	public User createEmployee(String username, String password) {
@@ -50,8 +61,23 @@ public class Manager extends User {
 		return employee;
 	}
 	
-	public void assignEmployeeToPart(User employee, Product part) {
+	public void assignPartToEmployee(User employee, Product part) {
 		((Employee)employee).setPart(part);
+	}
+	
+	public Product findAssemblyConnectedToProduct(int assemblyNumber, Product product) {
+		if(product instanceof Part) {
+			return null;
+		}
+		if(product.getNumber() == assemblyNumber) {
+			return product;
+		} else {
+			List<Product> products = ((Assembly) product).getProducts();
+			for (Product prod : products) {
+				return findAssemblyConnectedToProduct(assemblyNumber, prod);
+			}
+		}
+		return null;
 	}
 
 	public List<User> getEmployees() {

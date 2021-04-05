@@ -3,6 +3,7 @@ package data_access;
 import domain.Assembly;
 import domain.Part;
 import domain.Product;
+import utilities.CatalogueEntry;
 import utilities.NotFoundException;
 
 import java.util.ArrayList;
@@ -11,9 +12,11 @@ import java.util.List;
 public class ProductRepository {
 
     private List<Product> products;
+    private List<CatalogueEntry> entries;
 
-    public ProductRepository(List<Product> products) {
+	public ProductRepository(List<Product> products, List<CatalogueEntry> entries) {
         this.products = products;
+        this.entries = entries;
     }
 
     public Product findAssemblyByNumber(int number) throws NotFoundException {
@@ -21,7 +24,7 @@ public class ProductRepository {
             if(product instanceof Assembly && product.getNumber() == number)
                 return product;
         }
-        throw  new NotFoundException();
+        throw new NotFoundException("Assembly with the number not found.");
     }
 
     public Product findPartByNumber(int number) throws NotFoundException {
@@ -29,7 +32,7 @@ public class ProductRepository {
             if(product instanceof Part && product.getNumber() == number)
                 return product;
         }
-        throw  new NotFoundException();
+        throw new NotFoundException("Part with the number not found.");
     }
 
     public List<Product> findAllAssemblies(){
@@ -72,8 +75,26 @@ public class ProductRepository {
         return allParts;
     }
 
+    public CatalogueEntry findCatalogueEntryByNumber(int number) throws NotFoundException {
+		for (CatalogueEntry entry : entries) {
+			if(entry.getNumber() == number) {
+				return entry;
+			}
+		}
+		throw new NotFoundException("Catalogue entry with the number not found.");
+	}
+    
+    public List<CatalogueEntry> getEntries() {
+		return entries;
+	}
+    
     public Product save(Product product){
         products.add(product);
         return product;
+    }
+    
+    public CatalogueEntry saveEntry(CatalogueEntry entry){
+    	entries.add(entry);
+        return entry;
     }
 }

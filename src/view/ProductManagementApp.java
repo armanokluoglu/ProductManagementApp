@@ -5,9 +5,10 @@ import data_access.ProductRepository;
 import data_access.UserRepository;
 import domain.*;
 import org.json.JSONObject;
+import controllers.AssignFunctions;
+import controllers.ProductFunctions;
+import controllers.UserFunctions;
 import utilities.CatalogueEntry;
-import utilities.Status;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +32,6 @@ public class ProductManagementApp {
 		Product part4 = new Part(entry4);
 		((Assembly) ass2).addProduct(part);
 		((Assembly) ass2).addProduct(part2);
-		//part.changeStatus(Status.COMPLETE);
-		//part2.changeStatus(Status.COMPLETE);
 
 		User admin = new Admin("admin","1234");
 		User manager = new Manager("manager","1234");
@@ -52,10 +51,11 @@ public class ProductManagementApp {
 		JSONObject x = ((Assembly) ass).getProductTree();
 		System.out.println(x.toString());
 		UserRepository userRepository = new UserRepository(users);
-		ProductRepository productRepository = new ProductRepository(products);
-		ProductManagement productManagement = new ProductManagement(userRepository,productRepository);
-		List<Product> lones = productRepository.findLonelyParts();
-		JSONObject xx = ((Admin)admin).getJson();
+		ProductRepository productRepository = new ProductRepository(products, new ArrayList<>(Arrays.asList(entry, entry2, entry3, entry4)));
+		UserFunctions userFunctions = new UserFunctions(userRepository);
+		ProductFunctions productFunctions = new ProductFunctions(productRepository);
+		AssignFunctions assignFunctions = new AssignFunctions(userRepository, productRepository);
+		ProductManagement productManagement = new ProductManagement(userFunctions, productFunctions, assignFunctions);
 		InputOutputOperations io = new InputOutputOperations(productRepository,userRepository);
 		io.outputProducts();
 		io.outputUsers();

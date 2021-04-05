@@ -28,7 +28,7 @@ public class UserRepository {
             }
 
         }
-        throw new NotFoundException();
+        throw new NotFoundException("User with the username not found.");
     }
 
     public User findByUserName(String userName) throws NotFoundException{
@@ -37,7 +37,7 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException();
+        throw new NotFoundException("User with the username not found.");
     }
 
     public User findManagerByUserName(String userName) throws NotFoundException{
@@ -46,7 +46,7 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException();
+        throw new NotFoundException("Manager with the username not found.");
     }
 
     public User findEmployeeByUserName(String userName) throws NotFoundException{
@@ -55,7 +55,7 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException();
+        throw new NotFoundException("Employee with the username not found.");
     }
 
     public List<User> findAdmins(){

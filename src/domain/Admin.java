@@ -47,7 +47,6 @@ public class Admin extends User {
 	}
 	
 	public User createManager(String username, String password) {
-
 		User manager = new Manager(username,password);
 		managers.add(manager);
 		return manager;
@@ -63,6 +62,12 @@ public class Admin extends User {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+	
+	public void addProduct(Product product) {
+		List<Product> products = getProducts();
+		products.add(product);
+		setProducts(products);
 	}
 
 	public List<User> getManagers() {

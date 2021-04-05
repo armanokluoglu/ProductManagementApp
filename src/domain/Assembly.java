@@ -2,6 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import utilities.Status;
 import utilities.StatusState;
@@ -34,7 +36,6 @@ public class Assembly extends Product {
 	}
 
 	public JSONObject getProductTree() {
-
 		List<Product> products = getProducts();
 		List<JSONObject> parts = new ArrayList<>();
 		List<JSONObject> assemblies = new ArrayList<>();
@@ -58,6 +59,41 @@ public class Assembly extends Product {
 		productTree.put("PARTS",parts);
 		productTree.put("ASSEMBLIES",assemblies);
 		return productTree;
+	}
+	
+	public void printProduct(JSONObject json, int indentation) {
+		String indentString = new String(new char[indentation]).replace("\0", "  ");
+		String name = (String) json.get("name");
+		long number = (long) json.get("number");
+		double cost = (double) json.get("cost");
+		StatusState status = (StatusState) json.get("status");
+		System.out.println(indentString + "Name: " + name);
+		System.out.println(indentString + "Number: " + number);
+		System.out.println(indentString + "Cost: " + cost);
+		System.out.println(indentString + "Status: " + status.toString());
+
+		if (json.has("PARTS")) {
+			JSONArray parts = json.optJSONArray("PARTS");
+			printProducts(parts, indentString, indentation, "Parts");
+		}
+		if (json.has("ASSEMBLIES")) {
+			JSONArray assemblies = json.optJSONArray("ASSEMBLIES");
+			printProducts(assemblies, indentString, indentation, "Assemblies");
+		}
+	}
+
+	private void printProducts(JSONArray products, String indentString, int indentation, String print) {
+		if (products != null) {
+			System.out.println(indentString + print + ": " + (products.length() == 0 ? "None" : ""));
+			for (int i = 0; i < products.length(); i++) {
+				JSONObject product = (JSONObject) products.get(i);
+				printProduct(product, indentation + 1);
+				if (i != products.length() - 1)
+					System.out.println();
+			}
+		} else {
+			System.out.println(indentString + print + ": None");
+		}
 	}
 
 	@Override
