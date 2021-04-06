@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utilities.CatalogueEntry;
 import utilities.Status;
 import utilities.StatusState;
 
@@ -129,5 +130,23 @@ public class Assembly extends Product {
 			changeStatus(Status.IN_PROGRESS);
 		}
 		return getStatus();
+	}
+	
+	public static Assembly parseJson(org.json.simple.JSONObject assemblyJson){
+		String name = (String) assemblyJson.get("name");
+		double cost = ((Long)assemblyJson.get("cost")).doubleValue();
+		int number = ((Long)assemblyJson.get("number")).intValue();
+		List<Product> products = new ArrayList<>();
+		org.json.simple.JSONArray parts = (org.json.simple.JSONArray) assemblyJson.get("PARTS");
+		org.json.simple.JSONArray assemblies = (org.json.simple.JSONArray) assemblyJson.get("ASSEMBLIES");
+		if (parts.size()>0){
+			parts.forEach( entry -> products.add(Part.parseJson( (org.json.simple.JSONObject) entry ) ));
+		}
+		if(assemblies.size()>0){
+			assemblies.forEach( entry -> products.add(Assembly.parseJson( (org.json.simple.JSONObject) entry ) ));
+		}
+		Assembly assembly = new Assembly(name,number);
+		assembly.setProducts(products);
+		return assembly;
 	}
 }

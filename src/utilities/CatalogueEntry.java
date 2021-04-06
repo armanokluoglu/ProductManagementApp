@@ -2,6 +2,8 @@ package utilities;
 
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
+
 public class CatalogueEntry {
 
 	private String name;
@@ -44,6 +46,14 @@ public class CatalogueEntry {
 		entryJson.put("number",getNumber());
 		entryJson.put("cost",getCost());
 		return entryJson;
+	}
+
+	public static CatalogueEntry parseJson(org.json.simple.JSONObject catalogEntry){
+		//Get employee first name
+		String name = (String) catalogEntry.get("name");
+		double cost = ((Long)catalogEntry.get("cost")).doubleValue();
+		int number = ((Long)catalogEntry.get("number")).intValue();
+		return new CatalogueEntry(name,number,cost);
 	}
 	
 }

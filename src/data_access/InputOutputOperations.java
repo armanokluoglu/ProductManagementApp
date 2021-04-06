@@ -2,8 +2,12 @@ package data_access;
 
 import domain.*;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import utilities.CatalogueEntry;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +19,9 @@ public class InputOutputOperations {
     private ProductRepository productRepository;
     private UserRepository userRepository;
 
-    public InputOutputOperations(ProductRepository productRepository, UserRepository userRepository) {
-        this.productRepository = productRepository;
-        this.userRepository = userRepository;
+    public InputOutputOperations() {
+        this.productRepository = inputProducts();
+        this.userRepository = inputUsers();
     }
 
     public void outputProducts(){
@@ -29,8 +33,8 @@ public class InputOutputOperations {
         try {
 
             // Constructs a FileWriter given a file name, using the platform's default charset
-            file = new FileWriter("products2.json");
-            file.write(assembliesAndPartsJson.toString());
+            file = new FileWriter("products.json");
+            file.write(productsJSON.toString());
             CrunchifyLog("Successfully Copied JSON Object to File...");
             CrunchifyLog("\nJSON Object: " + productsJSON);
 
@@ -49,7 +53,7 @@ public class InputOutputOperations {
         }
     }
 
-    public JSONObject getProductJson(){
+    private JSONObject getProductJson(){
         JSONObject productsJSON = new JSONObject();
         List<JSONObject> assembliesJson = new ArrayList<>();
         List<JSONObject> partsJson = new ArrayList<>();
@@ -67,7 +71,7 @@ public class InputOutputOperations {
         return productsJSON;
     }
 
-    public JSONObject getCatalogueEntriesJson(){
+    private JSONObject getCatalogueEntriesJson(){
         JSONObject entriesJson = new JSONObject();
         List<CatalogueEntry> entries = productRepository.getEntries();
         List<JSONObject> entriesJsonList = new ArrayList<>();
@@ -112,4 +116,70 @@ public class InputOutputOperations {
     static public void CrunchifyLog(String str) {
         System.out.println("str");
     }
+
+
+
+    public ProductRepository inputProducts(){
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("products.json"))
+        {
+            Object obj = jsonParser.parse(reader);
+            org.json.simple.JSONObject productsAndCatalogEntries = (org.json.simple.JSONObject) obj;
+            List<CatalogueEntry> catalogueEntries = inputCatalogEntries((org.json.simple.JSONObject) productsAndCatalogEntries.get("catalogEntries"));
+            List<Product> products = inputProducts((org.json.simple.JSONObject) productsAndCatalogEntries.get("assembliesAndParts"));
+            return new ProductRepository(products,catalogueEntries);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<CatalogueEntry> inputCatalogEntries(org.json.simple.JSONObject catalogEntriesJson){
+        List<CatalogueEntry> catalogueEntries = new ArrayList<>();
+        org.json.simple.JSONArray entries = (org.json.simple.JSONArray)catalogEntriesJson.get("CatalogEntries");
+        entries.forEach( entry -> catalogueEntries.add(CatalogueEntry.parseJson( (org.json.simple.JSONObject) entry ) ));
+        return catalogueEntries;
+
+    }
+    private List<Product> inputProducts(org.json.simple.JSONObject productsJson){
+        List<Product> products = new ArrayList<>();
+        org.json.simple.JSONArray assemblies = (org.json.simple.JSONArray)productsJson.get("ASSEMBLIES");
+        org.json.simple.JSONArray parts = (org.json.simple.JSONArray)productsJson.get("PARTS");
+        assemblies.forEach( entry -> products.add(Assembly.parseJson( (org.json.simple.JSONObject) entry ) ));
+        parts.forEach( entry -> products.add(Part.parseJson( (org.json.simple.JSONObject) entry ) ));
+        return products;
+    }
+
+    public UserRepository inputUsers(){
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("users.json"))
+        {
+            Object obj = jsonParser.parse(reader);
+            org.json.simple.JSONObject usersJson = (org.json.simple.JSONObject) obj;
+            org.json.simple.JSONArray admins = (org.json.simple.JSONArray)usersJson.get("ALLUSERS");
+            List<User> users = parseUserArray(admins);
+            return new UserRepository(users);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<User> parseUserArray(org.json.simple.JSONArray usersJson){
+        List<User> users = new ArrayList<>();
+        usersJson.forEach( entry -> users.add(Admin.parseJson( (org.json.simple.JSONObject) entry ) ));
+        return users;
+    }
+
+
 }

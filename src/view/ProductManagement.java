@@ -1,5 +1,6 @@
 package view;
 
+import data_access.InputOutputOperations;
 import domain.*;
 import utilities.AlreadyExistsException;
 import utilities.NotFoundException;
@@ -18,11 +19,10 @@ public class ProductManagement {
 	private ProductFunctions productFunctions;
 	private AssignFunctions assignFunctions;
 
-	public ProductManagement(UserFunctions userFunctions, ProductFunctions productFunctions,
-			AssignFunctions assignFunctions) {
-		this.userFunctions = userFunctions;
-		this.productFunctions = productFunctions;
-		this.assignFunctions = assignFunctions;
+	public ProductManagement(InputOutputOperations io) {
+		this.userFunctions = new UserFunctions(io.inputUsers());
+		this.productFunctions = new ProductFunctions(io.inputProducts());
+		this.assignFunctions = new AssignFunctions(io.inputUsers(),io.inputProducts());
 	}
 
 	public void start() {

@@ -2,6 +2,7 @@ package domain;
 
 import org.json.JSONObject;
 import utilities.CatalogueEntry;
+import utilities.NotStartedState;
 import utilities.StatusState;
 
 public class Part extends Product {
@@ -33,6 +34,20 @@ public class Part extends Product {
 		json.put("status",getStatus());
 		json.put("cost",getCost());
 		return json;
+	}
+	public static Product parseJson(org.json.simple.JSONObject partJson){
+		String name = (String) partJson.get("name");
+		double cost = ((Long)partJson.get("cost")).doubleValue();
+		int number = ((Long)partJson.get("number")).intValue();
+		String status = (String) partJson.get("status");
+		Product part = new Part(new CatalogueEntry(name,number,cost));
+		if(status.equals("Not Started"))
+			part.setStatus(new NotStartedState(part));
+		else if(status.equals("In Progress"))
+			part.setStatus(new NotStartedState(part));
+		else
+			part.setStatus(new NotStartedState(part));
+		return part;
 	}
 
 }

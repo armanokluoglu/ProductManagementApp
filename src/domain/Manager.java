@@ -14,6 +14,10 @@ public class Manager extends User {
 		super(username, password);
 	}
 
+	public Manager(int id, String username, String password) {
+		super(id,username, password);
+	}
+
 	public JSONObject getProductTree() {
 		return ((Assembly) product).getProductTree();
 	}
@@ -99,9 +103,27 @@ public class Manager extends User {
 		}
 		managerJson.put("Id",getId());
 		managerJson.put("Username",getUsername());
+		managerJson.put("password",getPassword());
 		managerJson.put("PRODUCT",productJson);
 		managerJson.put("EMPLOYEES",employeesJson);
 		return managerJson;
+	}
+
+	public static User parseJson(org.json.simple.JSONObject userJson){
+		String userName = (String) userJson.get("Username");
+		String password = (String)userJson.get("password");
+		int id = ((Long)userJson.get("Id")).intValue();
+		org.json.simple.JSONArray employeesJson = (org.json.simple.JSONArray) userJson.get("EMPLOYEES");
+		Product assembly = Assembly.parseJson((org.json.simple.JSONObject) userJson.get("PRODUCT"));
+
+		List<User> employees = new ArrayList<>();
+		if(employeesJson.size()>0){
+			employeesJson.forEach( entry -> employees.add(Employee.parseJson( (org.json.simple.JSONObject) entry)));
+		}
+		Manager manager = new Manager(id,userName,password);
+		manager.setEmployees(employees);
+		manager.setProduct(assembly);
+		return manager;
 	}
 	
 }

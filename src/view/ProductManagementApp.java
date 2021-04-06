@@ -55,10 +55,8 @@ public class ProductManagementApp {
 		UserFunctions userFunctions = new UserFunctions(userRepository);
 		ProductFunctions productFunctions = new ProductFunctions(productRepository);
 		AssignFunctions assignFunctions = new AssignFunctions(userRepository, productRepository);
-		ProductManagement productManagement = new ProductManagement(userFunctions, productFunctions, assignFunctions);
-		InputOutputOperations io = new InputOutputOperations(productRepository,userRepository);
-		io.outputProducts();
-		io.outputUsers();
+		InputOutputOperations io = new InputOutputOperations();
+		ProductManagement productManagement = new ProductManagement(io);
 
 		productManagement.start();
 	}

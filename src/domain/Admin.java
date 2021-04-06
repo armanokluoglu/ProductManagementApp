@@ -12,6 +12,7 @@ public class Admin extends User {
 	public Admin(String username, String password) {
 		super(username, password);
 	}
+	public Admin(int id, String username, String password) { super(id, username, password); }
 
 	@Override
 	public JSONObject getJson() {
@@ -23,6 +24,8 @@ public class Admin extends User {
 		usersJson.put("Id",getId());
 		usersJson.put("Username",getUsername());
 		usersJson.put("MANAGERS",managersJson);
+		usersJson.put("password",getPassword());
+
 		return usersJson;
 	}
 
@@ -77,5 +80,18 @@ public class Admin extends User {
 	public void setManagers(List<User> managers) {
 		this.managers = managers;
 	}
-	
+
+	public static User parseJson(org.json.simple.JSONObject userJson){
+		String userName = (String) userJson.get("Username");
+		String password = (String)userJson.get("password");
+		int id = ((Long)userJson.get("Id")).intValue();
+		org.json.simple.JSONArray managersJson = (org.json.simple.JSONArray) userJson.get("MANAGERS");
+		List<User> managers = new ArrayList<>();
+		if(managersJson.size()>0){
+			managersJson.forEach( entry -> managers.add(Manager.parseJson( (org.json.simple.JSONObject) entry)));
+		}
+		Admin admin = new Admin(id,userName,password);
+		admin.setManagers(managers);
+		return admin;
+	}
 }
