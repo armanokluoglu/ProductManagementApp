@@ -1,5 +1,7 @@
 package utilities;
 
+import org.json.JSONObject;
+
 public class CatalogueEntry {
 
 	private String name;
@@ -34,6 +36,14 @@ public class CatalogueEntry {
 	
 	public void setCost(double cost) {
 		this.cost = cost;
+	}
+
+	public JSONObject getJson(){
+		JSONObject entryJson = new JSONObject();
+		entryJson.put("name",getName());
+		entryJson.put("number",getNumber());
+		entryJson.put("cost",getCost());
+		return entryJson;
 	}
 	
 }

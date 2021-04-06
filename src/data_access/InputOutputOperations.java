@@ -2,6 +2,7 @@ package data_access;
 
 import domain.*;
 import org.json.JSONObject;
+import utilities.CatalogueEntry;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,25 +22,15 @@ public class InputOutputOperations {
 
     public void outputProducts(){
         JSONObject productsJSON = new JSONObject();
-        List<JSONObject> assembliesJson = new ArrayList<>();
-        List<JSONObject> partsJson = new ArrayList<>();
-
-        List<Product> assemblies = productRepository.findAllAssemblies();
-        List<Product> lonelyParts = productRepository.findLonelyParts();
-        for(Product product:assemblies){
-            assembliesJson.add(((Assembly)product).getProductTree());
-        }
-        for(Product product:lonelyParts){
-            partsJson.add(((Part)product).getJson());
-        }
-        productsJSON.put("ASSEMBLIES",assembliesJson);
-        productsJSON.put("PARTS",partsJson);
-
+        JSONObject assembliesAndPartsJson = getProductJson();
+        JSONObject catalogEntriesJson = getCatalogueEntriesJson();
+        productsJSON.put("assembliesAndParts",assembliesAndPartsJson);
+        productsJSON.put("catalogEntries",catalogEntriesJson);
         try {
 
             // Constructs a FileWriter given a file name, using the platform's default charset
-            file = new FileWriter("products.json");
-            file.write(productsJSON.toString());
+            file = new FileWriter("products2.json");
+            file.write(assembliesAndPartsJson.toString());
             CrunchifyLog("Successfully Copied JSON Object to File...");
             CrunchifyLog("\nJSON Object: " + productsJSON);
 
@@ -56,6 +47,35 @@ public class InputOutputOperations {
                 e.printStackTrace();
             }
         }
+    }
+
+    public JSONObject getProductJson(){
+        JSONObject productsJSON = new JSONObject();
+        List<JSONObject> assembliesJson = new ArrayList<>();
+        List<JSONObject> partsJson = new ArrayList<>();
+
+        List<Product> assemblies = productRepository.findAllAssemblies();
+        List<Product> lonelyParts = productRepository.findLonelyParts();
+        for(Product product:assemblies){
+            assembliesJson.add(((Assembly)product).getProductTree());
+        }
+        for(Product product:lonelyParts){
+            partsJson.add(((Part)product).getJson());
+        }
+        productsJSON.put("ASSEMBLIES",assembliesJson);
+        productsJSON.put("PARTS",partsJson);
+        return productsJSON;
+    }
+
+    public JSONObject getCatalogueEntriesJson(){
+        JSONObject entriesJson = new JSONObject();
+        List<CatalogueEntry> entries = productRepository.getEntries();
+        List<JSONObject> entriesJsonList = new ArrayList<>();
+        for(CatalogueEntry entry:entries){
+            entriesJsonList.add(entry.getJson());
+        }
+        entriesJson.put("CatalogEntries",entriesJsonList);
+        return entriesJson;
     }
 
     public void outputUsers(){
