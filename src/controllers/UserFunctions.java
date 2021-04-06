@@ -29,6 +29,10 @@ public class UserFunctions {
 		return employee;
 	}
 	
+	public void printProductTreeOfManager(User manager) {
+		((Manager) manager).printProductTree();
+	}
+	
 	public void printAllManagers() {
 		List<User> managers = userRepository.findManagers();
 		for (User manager : managers) {
@@ -49,6 +53,14 @@ public class UserFunctions {
 		List<User> managers = userRepository.findManagers();
 		for (User manager : managers) {
 			((Manager) manager).printProductTree();
+			System.out.println();
+		}
+	}
+	
+	public void printEmployeesOfManager(User currentUser) {
+		List<User> employees = ((Manager) currentUser).getEmployees();
+		for (User employee : employees) {
+			System.out.println(employee.getId() + ": " + employee.getUsername());
 			System.out.println();
 		}
 	}

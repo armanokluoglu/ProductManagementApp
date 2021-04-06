@@ -12,7 +12,7 @@ public class Assembly extends Product {
 
 	private List<Product> products;
 
-	public Assembly(String name, long number) {
+	public Assembly(String name, int number) {
 		super(name, number);
 		setProducts(new ArrayList<>());
 		setCallback(this);
@@ -64,7 +64,7 @@ public class Assembly extends Product {
 	public void printProduct(JSONObject json, int indentation) {
 		String indentString = new String(new char[indentation]).replace("\0", "  ");
 		String name = (String) json.get("name");
-		long number = (long) json.get("number");
+		int number = (int) json.get("number");
 		double cost = (double) json.get("cost");
 		StatusState status = (StatusState) json.get("status");
 		System.out.println(indentString + "Name: " + name);

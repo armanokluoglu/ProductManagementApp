@@ -10,18 +10,18 @@ import utilities.StatusState;
 public abstract class Product implements StatusChangeCallback {
 
 	private String name;
-	private long number;
+	private int number;
 	private double cost;
 	private StatusState status;
 	private StatusChangeCallback callback;
 	
-	public Product(String name, long number) {
+	public Product(String name, int number) {
 		setName(name);
 		setNumber(number);
 		setStatus(new NotStartedState(this));
 	}
 	
-	public Product(String name, long number, double cost) {
+	public Product(String name, int number, double cost) {
 		setName(name);
 		setNumber(number);
 		setCost(cost);
@@ -56,11 +56,11 @@ public abstract class Product implements StatusChangeCallback {
 		this.name = name;
 	}
 
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 

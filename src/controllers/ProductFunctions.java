@@ -74,7 +74,7 @@ public class ProductFunctions {
 		
 	}
 	
-	public void printCatalogue() {
+	public void printCatalogues() {
 		for(CatalogueEntry entry : productRepository.getEntries()) {
 			System.out.println("Number: " + entry.getNumber());
 			System.out.println("Name: " + entry.getName());
@@ -88,6 +88,15 @@ public class ProductFunctions {
 			System.out.println("Number: " + part.getNumber());
 			System.out.println("Name: " + part.getName());
 			System.out.println("Cost: " + part.getCost());
+			System.out.println();
+		}
+	}
+	
+	public void printAllAssemblies() {
+		for(Product assembly : productRepository.findAllAssemblies()) {
+			System.out.println("Number: " + assembly.getNumber());
+			System.out.println("Name: " + assembly.getName());
+			System.out.println("Cost: " + assembly.getCost());
 			System.out.println();
 		}
 	}

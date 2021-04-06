@@ -3,10 +3,10 @@ package utilities;
 public class CatalogueEntry {
 
 	private String name;
-	private long number;
+	private int number;
 	private double cost;
 	
-	public CatalogueEntry(String name, long number, double cost) {
+	public CatalogueEntry(String name, int number, double cost) {
 		this.name = name;
 		this.number = number;
 		this.cost = cost;
@@ -20,11 +20,11 @@ public class CatalogueEntry {
 		this.name = name;
 	}
 	
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 	
-	public void setNumber(long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 	

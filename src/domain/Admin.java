@@ -38,7 +38,7 @@ public class Admin extends User {
 		return null;
 	}
 	
-	public Product createAssembly(String name, long number) {
+	public Product createAssembly(String name, int number) {
 		Product assembly = new Assembly(name, number);
 		List<Product> products = getProducts();
 		products.add(assembly);

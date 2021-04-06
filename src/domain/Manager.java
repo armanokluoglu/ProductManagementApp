@@ -34,13 +34,6 @@ public class Manager extends User {
 		((Assembly) product).addProduct(part);
 		return part;
 	}
-	
-//	public Product createAssembly(String name, long number) {
-//		Product assembly = new Assembly(name, number);
-//		Product product = getProduct();
-//		((Assembly) product).addProduct(assembly);
-//		return assembly;
-//	}
 
 	public Product addAssembly(Product assembly) {
 		Product product = getProduct();

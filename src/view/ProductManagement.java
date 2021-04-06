@@ -18,7 +18,8 @@ public class ProductManagement {
 	private ProductFunctions productFunctions;
 	private AssignFunctions assignFunctions;
 
-	public ProductManagement(UserFunctions userFunctions, ProductFunctions productFunctions, AssignFunctions assignFunctions) {
+	public ProductManagement(UserFunctions userFunctions, ProductFunctions productFunctions,
+			AssignFunctions assignFunctions) {
 		this.userFunctions = userFunctions;
 		this.productFunctions = productFunctions;
 		this.assignFunctions = assignFunctions;
@@ -33,7 +34,7 @@ public class ProductManagement {
 			login(scanner);
 			mainMenu(scanner);
 		} catch (NotFoundException | PasswordIncorrectException e) {
-			System.out.println("User Not Found or password is wrong");
+			System.out.println("User not found or password is wrong");
 			start();
 		}
 	}
@@ -66,16 +67,11 @@ public class ProductManagement {
 		System.out.println("4. Print all employees.");
 		System.out.println("5. Print all product trees.");
 		System.out.println("6. Log out.");
+		System.out.println("7. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
-			mainMenu(scanner);
-		}
-		System.out.println();
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
+			adminMenu(scanner);
 		switch (choice) {
 		case 1:
 			createManagerMenu(scanner);
@@ -98,10 +94,18 @@ public class ProductManagement {
 		case 6:
 			start();
 			break;
+		case 7:
+			closeProgram(scanner);
+			break;
 		default:
 			adminMenu(scanner);
 			break;
 		}
+	}
+
+	private void closeProgram(Scanner scanner) {
+		scanner.close();
+		System.exit(0);
 	}
 
 	private void managerMenu(Scanner scanner) {
@@ -109,17 +113,13 @@ public class ProductManagement {
 		System.out.println("2. Employee menu.");
 		System.out.println("3. Print product tree.");
 		System.out.println("4. Print lonely parts.");
-		System.out.println("5. Log out.");
+		System.out.println("5. Print employees.");
+		System.out.println("6. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
 			managerMenu(scanner);
-		}
-		System.out.println();
 		switch (choice) {
 		case 1:
 			productMenuForManager(scanner);
@@ -128,7 +128,7 @@ public class ProductManagement {
 			managerEmployeeMenu(scanner);
 			break;
 		case 3:
-			((Manager) currentUser).printProductTree();
+			userFunctions.printProductTreeOfManager(currentUser);
 			managerMenu(scanner);
 			break;
 		case 4:
@@ -136,7 +136,14 @@ public class ProductManagement {
 			managerMenu(scanner);
 			break;
 		case 5:
+			userFunctions.printEmployeesOfManager(currentUser);
+			managerMenu(scanner);
+			break;
+		case 6:
 			start();
+			break;
+		case 0:
+			closeProgram(scanner);
 			break;
 		default:
 			managerMenu(scanner);
@@ -146,18 +153,13 @@ public class ProductManagement {
 
 	private void employeeMenu(Scanner scanner) {
 		System.out.println("1. Change status of part.");
-		System.out.println("2. See status of part.");
+		System.out.println("2. See details of part.");
 		System.out.println("3. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
 			employeeMenu(scanner);
-		}
-		System.out.println();
 		switch (choice) {
 		case 1:
 			changeStatusOfPartMenu(scanner);
@@ -168,6 +170,9 @@ public class ProductManagement {
 			break;
 		case 3:
 			start();
+			break;
+		case 0:
+			closeProgram(scanner);
 			break;
 		default:
 			employeeMenu(scanner);
@@ -189,28 +194,26 @@ public class ProductManagement {
 		System.out.println("2. Create a new product and assign it to a manager.");
 		System.out.println("3. Go back.");
 		System.out.println("4. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
-			mainMenu(scanner);
-		}
-		System.out.println();
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
+			productMenuForAdmin(scanner);
 		switch (choice) {
 		case 1:
 			addProductToManagerMenu(scanner);
 			break;
 		case 2:
-			createProductMenu(scanner);
+			createAssemblyAndAssignToManagerMenuForAdmin(scanner);
 			break;
 		case 3:
 			adminMenu(scanner);
 			break;
 		case 4:
 			start();
+			break;
+		case 0:
+			closeProgram(scanner);
 			break;
 		default:
 			adminMenu(scanner);
@@ -227,16 +230,11 @@ public class ProductManagement {
 		System.out.println("7. Print catalogue entries.");
 		System.out.println("8. Go back.");
 		System.out.println("9. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
-			managerMenu(scanner);
-		}
-		System.out.println();
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
+			productMenuForManager(scanner);
 		switch (choice) {
 		case 1:
 			createPartMenu(scanner);
@@ -257,7 +255,7 @@ public class ProductManagement {
 			addPartToMyProductMenu(scanner);
 			break;
 		case 7:
-			productFunctions.printCatalogue();
+			productFunctions.printCatalogues();
 			productMenuForManager(scanner);
 			break;
 		case 8:
@@ -265,6 +263,9 @@ public class ProductManagement {
 			break;
 		case 9:
 			start();
+			break;
+		case 0:
+			closeProgram(scanner);
 			break;
 		default:
 			managerMenu(scanner);
@@ -278,16 +279,11 @@ public class ProductManagement {
 		System.out.println("3. Complete");
 		System.out.println("4. Go back.");
 		System.out.println("5. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
-			employeeMenu(scanner);
-		}
-		System.out.println();
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
+			changeStatusOfPartMenu(scanner);
 		switch (choice) {
 		case 1:
 			((Employee) currentUser).changeStatusOfPart(Status.NOT_STARTED);
@@ -307,6 +303,9 @@ public class ProductManagement {
 		case 5:
 			start();
 			break;
+		case 0:
+			closeProgram(scanner);
+			break;
 		default:
 			employeeMenu(scanner);
 		}
@@ -315,7 +314,8 @@ public class ProductManagement {
 	private void printStatusOfPart() {
 		Product part = ((Employee) currentUser).getPart();
 		if (part != null) {
-			System.out.println("Status of " + part.getName() + " (" + part.getNumber() + "): " + part.getStatus().toString());
+			System.out.println(
+					"Status of " + part.getName() + " (" + part.getNumber() + "): " + part.getStatus().toString());
 			System.out.println();
 		} else {
 			System.out.println("Employee does not have an assigned part.\n");
@@ -323,32 +323,37 @@ public class ProductManagement {
 	}
 
 	private void addProductToManagerMenu(Scanner scanner) {
-		System.out.print("Please enter the manager username: ");
-		String username = scanner.next();
-		System.out.print("Please enter the product number: ");
-		int productNumber = scanner.nextInt();
+		userFunctions.printAllManagers();
+		System.out.print("Please select a manager from above and enter the id: ");
+		int managerId = scannerNextInt(scanner);
+		if (managerId == -1)
+			addProductToManagerMenu(scanner);
+		productFunctions.printAllAssemblies();
+		System.out.print("Please select a product from above and enter the number: ");
+		int productNumber = scannerNextInt(scanner);
+		if (productNumber == -1)
+			addProductToManagerMenu(scanner);
 		try {
-			assignFunctions.assignAssemblyToManagerForAdmin(productNumber, username, currentUser);
-			System.out.println("Product has been assigned to " + username + ".\n");
+			assignFunctions.assignAssemblyToManagerForAdmin(productNumber, managerId, currentUser);
+			System.out.println("Product has been assigned to manager with id " + managerId + ".\n");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		adminMenu(scanner);
 	}
 
-	private void createProductMenu(Scanner scanner) {
-		if (currentUser instanceof Admin) {
-			createAssemblyAndAssignToManagerMenuForAdmin(scanner);
-		}
-	}
-
 	private void createAssemblyAndAssignToManagerMenuForAdmin(Scanner scanner) {
-		System.out.print("Please enter the username of the manager who you will assign the product: ");
-		String username = scanner.next();
-		System.out.print("Please enter the name of the product: ");
+		userFunctions.printAllManagers();
+		System.out.print("Please select a manager from above and enter the id: ");
+		int managerId = scannerNextInt(scanner);
+		if (managerId == -1)
+			createAssemblyAndAssignToManagerMenuForAdmin(scanner);
+		System.out.print("Please enter the name of the new product: ");
 		String productName = scanner.next();
-		System.out.print("Please enter the number of the product: ");
-		int productNumber = scanner.nextInt();
+		System.out.print("Please enter the number of the new product: ");
+		int productNumber = scannerNextInt(scanner);
+		if (productNumber == -1)
+			createAssemblyAndAssignToManagerMenuForAdmin(scanner);
 		try {
 			productFunctions.createAssemblyForAdmin(productName, productNumber, currentUser);
 			System.out.println("Product created with name " + productName + " and number " + productNumber + ".\n");
@@ -357,25 +362,32 @@ public class ProductManagement {
 			adminMenu(scanner);
 		}
 		try {
-			assignFunctions.assignAssemblyToManagerForAdmin(productNumber, username, currentUser);
-			System.out.println("Created product has been assigned to " + username + ".\n");
+			assignFunctions.assignAssemblyToManagerForAdmin(productNumber, managerId, currentUser);
+			System.out.println("Created product has been assigned to manager with id " + managerId + ".\n");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		adminMenu(scanner);
 	}
 
-	private void createAndAddAssemblyToAssemblyMenu(Scanner scanner)  {
+	private void createAndAddAssemblyToAssemblyMenu(Scanner scanner) {
 		System.out.print("Please enter the name of the new assembly: ");
 		String newAssemblyName = scanner.next();
 		System.out.print("Please enter the number of the new assembly: ");
-		int newAssemblyNumber = scanner.nextInt();
-		System.out.print("Please enter the number of the assembly which you will add this product: ");
-		int assemblyNumber = scanner.nextInt();
-		
+		int newAssemblyNumber = scannerNextInt(scanner);
+		if (newAssemblyNumber == -1)
+			createAndAddAssemblyToAssemblyMenu(scanner);
+		productFunctions.printAllAssemblies();
+		System.out.print("Please select an assembly above and enter the number: ");
+		int assemblyNumber = scannerNextInt(scanner);
+		if (assemblyNumber == -1)
+			createAndAddAssemblyToAssemblyMenu(scanner);
+
 		try {
-			productFunctions.createAssemblyAndAddToAssemblyForManager(newAssemblyName, newAssemblyNumber, assemblyNumber, currentUser);
-			System.out.println("Assembly created with name " + newAssemblyName + " and number " + newAssemblyNumber + ".\n");
+			productFunctions.createAssemblyAndAddToAssemblyForManager(newAssemblyName, newAssemblyNumber,
+					assemblyNumber, currentUser);
+			System.out.println(
+					"Assembly created with name " + newAssemblyName + " and number " + newAssemblyNumber + ".\n");
 			System.out.println("Created assembly added to assembly with the number " + assemblyNumber + ".\n");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
@@ -389,11 +401,14 @@ public class ProductManagement {
 		System.out.print("Please enter the name of the new assembly: ");
 		String newAssemblyName = scanner.next();
 		System.out.print("Please enter the number of the new assembly: ");
-		int newAssemblyNumber = scanner.nextInt();
-		
+		int newAssemblyNumber = scannerNextInt(scanner);
+		if (newAssemblyNumber == -1)
+			createAndAddAssemblyToMyProductMenu(scanner);
+
 		try {
 			productFunctions.createAssemblyAndAddToProductForManager(newAssemblyName, newAssemblyNumber, currentUser);
-			System.out.println("Assembly created with name " + newAssemblyName + " and number " + newAssemblyNumber + ".\n");
+			System.out.println(
+					"Assembly created with name " + newAssemblyName + " and number " + newAssemblyNumber + ".\n");
 			System.out.println("Created assembly added to product.\n");
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
@@ -402,39 +417,51 @@ public class ProductManagement {
 	}
 
 	private void createPartMenu(Scanner scanner) {
-		productFunctions.printCatalogue();
+		productFunctions.printCatalogues();
 		System.out.print("Please enter the number of the part to create: ");
-		int newPartNumber = scanner.nextInt();
+		int newPartNumber = scannerNextInt(scanner);
+		if (newPartNumber == -1)
+			createPartMenu(scanner);
 		try {
 			productFunctions.createPartForManager(newPartNumber);
 			System.out.println("Part created.");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
-		}	
+		}
 		productMenuForManager(scanner);
 	}
-	
+
 	private void createCatalogueMenu(Scanner scanner) {
 		System.out.print("Please enter the number: ");
-		int number = scanner.nextInt();
+		int number = scannerNextInt(scanner);
+		if (number == -1)
+			createCatalogueMenu(scanner);
 		System.out.print("Please enter the name: ");
 		String name = scanner.next();
 		System.out.print("Please enter the cost: ");
-		double cost = scanner.nextDouble();
+		double cost = scannerNextDouble(scanner);
+		if (cost == -1)
+			createCatalogueMenu(scanner);
 		try {
 			productFunctions.createCatalogueEntryForManager(number, name, cost);
 			System.out.println("Catalogue entry created.");
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
-		}	
+		}
 		productMenuForManager(scanner);
 	}
 
 	private void addPartToAssemblyMenu(Scanner scanner) {
-		System.out.print("Please enter the number of the assembly: ");
-		int assemblyNumber = scanner.nextInt();
-		System.out.print("Please enter the number of the part: ");
-		int partNumber = scanner.nextInt();
+		productFunctions.printAllAssemblies();
+		System.out.print("Please select an assembly from above and enter the number: ");
+		int assemblyNumber = scannerNextInt(scanner);
+		if (assemblyNumber == -1)
+			addPartToAssemblyMenu(scanner);
+		productFunctions.printLonelyParts();
+		System.out.print("Please select a part from above and enter the number: ");
+		int partNumber = scannerNextInt(scanner);
+		if (partNumber == -1)
+			addPartToAssemblyMenu(scanner);
 		try {
 			productFunctions.addPartToAssemblyForManager(assemblyNumber, partNumber, currentUser);
 			System.out.println("Part has been added to assembly.");
@@ -445,8 +472,11 @@ public class ProductManagement {
 	}
 
 	private void addPartToMyProductMenu(Scanner scanner) {
+		productFunctions.printLonelyParts();
 		System.out.print("Please enter the number of the part: ");
-		int partNumber = scanner.nextInt();
+		int partNumber = scannerNextInt(scanner);
+		if (partNumber == -1)
+			addPartToMyProductMenu(scanner);
 		try {
 			productFunctions.addPartToAssemblyOfManager(partNumber, currentUser);
 			System.out.println("Part has been added to product.");
@@ -461,16 +491,11 @@ public class ProductManagement {
 		System.out.println("2. Assign part to employee.");
 		System.out.println("3. Go back.");
 		System.out.println("4. Log out.");
+		System.out.println("0. Exit.");
 		System.out.print("Please enter a number: ");
-		int choice = -1;
-		try {
-			choice = scanner.nextInt();
-		} catch (InputMismatchException e) {
-			scanner.nextLine();
-			System.out.println("Please choose a valid option.\n");
-			managerMenu(scanner);
-		}
-		System.out.println();
+		int choice = scannerNextInt(scanner);
+		if (choice == -1)
+			managerEmployeeMenu(scanner);
 		switch (choice) {
 		case 1:
 			createEmployeeMenu(scanner);
@@ -483,6 +508,9 @@ public class ProductManagement {
 			break;
 		case 4:
 			start();
+			break;
+		case 0:
+			closeProgram(scanner);
 			break;
 		default:
 			managerMenu(scanner);
@@ -500,16 +528,48 @@ public class ProductManagement {
 	}
 
 	private void assignPartToEmployee(Scanner scanner) {
-		System.out.print("Please enter username for employee: ");
-		String employeeUserName = scanner.next();
-		System.out.print("Please enter the number of the part: ");
-		int partNumber = scanner.nextInt();
+		userFunctions.printEmployeesOfManager(currentUser);
+		System.out.print("Please select an employee from above and enter the id: ");
+		int employeeId = scannerNextInt(scanner);
+		if (employeeId == -1)
+			assignPartToEmployee(scanner);
+		productFunctions.printLonelyParts();
+		System.out.print("Please select a part from above and enter the number: ");
+		int partNumber = scannerNextInt(scanner);
+		if (partNumber == -1)
+			assignPartToEmployee(scanner);
 		try {
-			assignFunctions.assignPartToEmployeeForManager(employeeUserName, partNumber, currentUser);
+			assignFunctions.assignPartToEmployeeForManager(employeeId, partNumber, currentUser);
 			System.out.println("Part has been assigned to employee.");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		managerEmployeeMenu(scanner);
+	}
+
+	private int scannerNextInt(Scanner scanner) {
+		int choice = -1;
+		try {
+			choice = scanner.nextInt();
+		} catch (InputMismatchException e) {
+			scanner.nextLine();
+			System.out.println("Invalid input, please try again.\n");
+			return -1;
+		}
+		System.out.println();
+		return choice;
+	}
+	
+	private double scannerNextDouble(Scanner scanner) {
+		double choice = -1;
+		try {
+			choice = scanner.nextDouble();
+		} catch (InputMismatchException e) {
+			scanner.nextLine();
+			System.out.println("Invalid input, please try again.\n");
+			return -1;
+		}
+		System.out.println();
+		return choice;
 	}
 }

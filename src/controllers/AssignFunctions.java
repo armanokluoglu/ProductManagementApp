@@ -18,14 +18,14 @@ public class AssignFunctions {
 		this.productRepository = productRepository;
 	}
 	
-	public void assignPartToEmployeeForManager(String employeeUserName, int partNumber, User currentUser) throws NotFoundException {
-		User employee = userRepository.findEmployeeByUserName(employeeUserName);
+	public void assignPartToEmployeeForManager(int employeeId, int partNumber, User currentUser) throws NotFoundException {
+		User employee = userRepository.findEmployeeById(employeeId);
 		Product part = productRepository.findPartByNumber(partNumber);
 		((Manager) currentUser).assignPartToEmployee(employee, part);
 	}	
 	
-	public void assignAssemblyToManagerForAdmin(int productNumber, String username, User currentUser) throws NotFoundException {
-		User manager = userRepository.findManagerByUserName(username);
+	public void assignAssemblyToManagerForAdmin(int productNumber, int managerId, User currentUser) throws NotFoundException {
+		User manager = userRepository.findManagerById(managerId);
 		Product product = productRepository.findAssemblyByNumber(productNumber);
 		((Admin) currentUser).assignManagerToAssembly(manager, product);
 	}

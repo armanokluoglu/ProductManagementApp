@@ -37,7 +37,7 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException("User with the username not found.");
+        throw new NotFoundException("User with the given username not found.");
     }
 
     public User findManagerByUserName(String userName) throws NotFoundException{
@@ -46,7 +46,16 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException("Manager with the username not found.");
+        throw new NotFoundException("Manager with the given username not found.");
+    }
+    
+    public User findManagerById(int id) throws NotFoundException{
+        for(User user: users){
+            if(user instanceof Manager && user.getId() == id ){
+                return user;
+            }
+        }
+        throw new NotFoundException("Manager with the given id not found.");
     }
 
     public User findEmployeeByUserName(String userName) throws NotFoundException{
@@ -55,7 +64,16 @@ public class UserRepository {
                 return user;
             }
         }
-        throw new NotFoundException("Employee with the username not found.");
+        throw new NotFoundException("Employee with the given username not found.");
+    }
+    
+    public User findEmployeeById(int id) throws NotFoundException{
+        for(User user: users){
+            if(user instanceof Employee && user.getId() == id ){
+                return user;
+            }
+        }
+        throw new NotFoundException("Employee with the given id not found.");
     }
 
     public List<User> findAdmins(){
