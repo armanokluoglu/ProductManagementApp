@@ -176,8 +176,13 @@ public class InputOutputOperations {
     }
 
     private List<User> parseUserArray(org.json.simple.JSONArray usersJson){
+        List<User> admins = new ArrayList<>();
         List<User> users = new ArrayList<>();
-        usersJson.forEach( entry -> users.add(Admin.parseJson( (org.json.simple.JSONObject) entry ) ));
+        usersJson.forEach( entry -> admins.add(Admin.parseJson( (org.json.simple.JSONObject) entry ) ));
+        for (User admin:admins){
+            users.addAll(((Admin)admin).getAllManagers());
+            users.addAll(((Admin)admin).getAllEmployees());
+        }
         return users;
     }
 

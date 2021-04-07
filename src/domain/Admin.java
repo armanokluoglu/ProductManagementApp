@@ -33,11 +33,18 @@ public class Admin extends User {
 	}
 
 	public List<User> getAllManagers() {
-		return null;
+		List<User> managers = new ArrayList<>();
+		for(User manager:getManagers())
+			managers.add(manager);
+		return managers;
 	}
 	
 	public List<User> getAllEmployees() {
-		return null;
+		List<User> managers = getAllManagers();
+		List<User> employees = new ArrayList<>();
+		for(User manager:managers)
+			employees.addAll(((Manager)manager).getEmployees());
+		return employees;
 	}
 	
 	public JSONObject getAllProductTrees() {
