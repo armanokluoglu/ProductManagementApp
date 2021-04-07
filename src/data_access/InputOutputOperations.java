@@ -182,7 +182,9 @@ public class InputOutputOperations {
         for (User admin:admins){
             users.addAll(((Admin)admin).getAllManagers());
             users.addAll(((Admin)admin).getAllEmployees());
+            users.add(admin);
         }
+
         return users;
     }
 
