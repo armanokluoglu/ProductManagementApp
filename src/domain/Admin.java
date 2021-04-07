@@ -1,7 +1,10 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.json.JSONObject;
 
 public class Admin extends User {
@@ -91,6 +94,12 @@ public class Admin extends User {
 			managersJson.forEach( entry -> managers.add(Manager.parseJson( (org.json.simple.JSONObject) entry)));
 		}
 		Admin admin = new Admin(id,userName,password);
+		Set<Product> adminProducts = new HashSet<>();
+		if(managers!=null)
+		for(User manager:managers){
+			adminProducts.add(((Manager)manager).getProduct());
+		}
+		admin.setProducts(new ArrayList<>(adminProducts));
 		admin.setManagers(managers);
 		return admin;
 	}
