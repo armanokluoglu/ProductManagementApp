@@ -12,6 +12,8 @@ public abstract class User {
 	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
+		this.id = User.id_counter;
+		User.id_counter++;
 	}
 	public User(int id, String username, String password) {
 		this.username = username;

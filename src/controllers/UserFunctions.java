@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.List;
 
+import data_access.InputOutputOperations;
 import data_access.UserRepository;
 import domain.Admin;
 import domain.Manager;
@@ -12,11 +13,17 @@ import utilities.PasswordIncorrectException;
 public class UserFunctions {
 	
 	private UserRepository userRepository;
-
-	public UserFunctions(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	private InputOutputOperations io;
+	
+	public UserFunctions(InputOutputOperations io) {
+		this.io = io;
+		this.userRepository = io.inputUsers();
 	}
 	
+	public UserRepository getUserRepository() {
+		return userRepository;
+	}
+
 	public User createManagerForAdmin(String username, String password, User currentUser) {
 		User manager = ((Admin) currentUser).createManager(username, password);
 		userRepository.save(manager);
@@ -67,5 +74,9 @@ public class UserFunctions {
 	
 	public User getCurrentUser(String username, String password) throws NotFoundException, PasswordIncorrectException {
 		return userRepository.findByUserNameAndPassword(username, password);
+	}
+	
+	public void saveUsers() {
+		io.outputUsers();
 	}
 }

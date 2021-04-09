@@ -20,9 +20,9 @@ public class ProductManagement {
 	private AssignFunctions assignFunctions;
 
 	public ProductManagement(InputOutputOperations io) {
-		this.userFunctions = new UserFunctions(io.inputUsers());
-		this.productFunctions = new ProductFunctions(io.inputProducts());
-		this.assignFunctions = new AssignFunctions(io.inputUsers(),io.inputProducts());
+		this.userFunctions = new UserFunctions(io);
+		this.productFunctions = new ProductFunctions(io);
+		this.assignFunctions = new AssignFunctions(this.userFunctions.getUserRepository(), this.productFunctions.getProductRepository());
 	}
 
 	public void start() {
@@ -105,6 +105,8 @@ public class ProductManagement {
 
 	private void closeProgram(Scanner scanner) {
 		scanner.close();
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		System.exit(0);
 	}
 
@@ -186,6 +188,7 @@ public class ProductManagement {
 		String password = scanner.next();
 		User createdManager = userFunctions.createManagerForAdmin(username, password, currentUser);
 		System.out.println("Manager with username " + createdManager.getUsername() + " created.");
+		userFunctions.saveUsers();
 		adminMenu(scanner);
 	}
 
@@ -339,6 +342,8 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		adminMenu(scanner);
 	}
 
@@ -367,6 +372,8 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		adminMenu(scanner);
 	}
 
@@ -394,6 +401,8 @@ public class ProductManagement {
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -413,6 +422,8 @@ public class ProductManagement {
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -428,6 +439,7 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -448,6 +460,7 @@ public class ProductManagement {
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -468,6 +481,8 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -483,6 +498,8 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		productMenuForManager(scanner);
 	}
 
@@ -524,6 +541,7 @@ public class ProductManagement {
 		String password = scanner.next();
 		User createdEmployee = userFunctions.createEmployeeForManager(username, password, currentUser);
 		System.out.println("Employee with username " + createdEmployee.getUsername() + " created.");
+		userFunctions.saveUsers();
 		managerEmployeeMenu(scanner);
 	}
 
@@ -544,6 +562,8 @@ public class ProductManagement {
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+		userFunctions.saveUsers();
+		productFunctions.saveProducts();
 		managerEmployeeMenu(scanner);
 	}
 

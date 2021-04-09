@@ -1,5 +1,6 @@
 package controllers;
 
+import data_access.InputOutputOperations;
 import data_access.ProductRepository;
 import domain.Admin;
 import domain.Assembly;
@@ -14,11 +15,17 @@ import utilities.NotFoundException;
 public class ProductFunctions {
 	
 	private ProductRepository productRepository;
+	private InputOutputOperations io;
 
-	public ProductFunctions(ProductRepository productRepository) {
-		this.productRepository = productRepository;
+	public ProductFunctions(InputOutputOperations io) {
+		this.io = io;
+		this.productRepository = io.inputProducts();
 	}
 	
+	public ProductRepository getProductRepository() {
+		return productRepository;
+	}
+
 	public void addPartToAssemblyOfManager(int partNumber, User currentUser) throws NotFoundException {
 		Product newPart = productRepository.findPartByNumber(partNumber);
 		((Manager) currentUser).addPart(newPart);
@@ -109,5 +116,9 @@ public class ProductFunctions {
 			CatalogueEntry entry = new CatalogueEntry(name, number, cost);
 			productRepository.saveEntry(entry);
 		}
+	}
+	
+	public void saveProducts() {
+		io.outputProducts();
 	}
 }
