@@ -119,6 +119,6 @@ public class ProductFunctions {
 	}
 	
 	public void saveProducts() {
-		io.outputProducts();
+		io.outputProducts(productRepository);
 	}
 }

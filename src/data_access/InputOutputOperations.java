@@ -24,10 +24,10 @@ public class InputOutputOperations {
 		this.userRepository = inputUsers();
 	}
 
-	public void outputProducts() {
+	public void outputProducts(ProductRepository productRepository) {
 		JSONObject productsJSON = new JSONObject();
-		JSONObject assembliesAndPartsJson = getProductJson();
-		JSONObject catalogEntriesJson = getCatalogueEntriesJson();
+		JSONObject assembliesAndPartsJson = getProductJson(productRepository);
+		JSONObject catalogEntriesJson = getCatalogueEntriesJson(productRepository);
 		productsJSON.put("assembliesAndParts", assembliesAndPartsJson);
 		productsJSON.put("catalogEntries", catalogEntriesJson);
 		try {
@@ -54,7 +54,7 @@ public class InputOutputOperations {
 		}
 	}
 
-	private JSONObject getProductJson() {
+	private JSONObject getProductJson(ProductRepository productRepository) {
 		JSONObject productsJSON = new JSONObject();
 		List<JSONObject> assembliesJson = new ArrayList<>();
 		List<JSONObject> partsJson = new ArrayList<>();
@@ -72,7 +72,7 @@ public class InputOutputOperations {
 		return productsJSON;
 	}
 
-	private JSONObject getCatalogueEntriesJson() {
+	private JSONObject getCatalogueEntriesJson(ProductRepository productRepository) {
 		JSONObject entriesJson = new JSONObject();
 		List<CatalogueEntry> entries = productRepository.getEntries();
 		List<JSONObject> entriesJsonList = new ArrayList<>();
@@ -83,7 +83,7 @@ public class InputOutputOperations {
 		return entriesJson;
 	}
 
-	public void outputUsers() {
+	public void outputUsers(UserRepository userRepository) {
 		JSONObject usersJson = new JSONObject();
 		List<User> admins = userRepository.findAdmins();
 		List<JSONObject> adminsJson = new ArrayList<>();

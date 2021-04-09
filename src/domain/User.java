@@ -7,7 +7,7 @@ public abstract class User {
 	private int id;
 	private String username;
 	private String password;
-	private static int id_counter = 0;
+	private static int id_counter = 5;
 	
 	public User(String username, String password) {
 		this.username = username;

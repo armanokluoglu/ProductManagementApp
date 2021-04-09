@@ -77,6 +77,6 @@ public class UserFunctions {
 	}
 	
 	public void saveUsers() {
-		io.outputUsers();
+		io.outputUsers(userRepository);
 	}
 }

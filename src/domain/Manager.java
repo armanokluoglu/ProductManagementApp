@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONObject;
 import utilities.CatalogueEntry;
 
+import javax.swing.*;
+
 public class Manager extends User {
 
 	private List<User> employees;
@@ -97,10 +99,19 @@ public class Manager extends User {
 	public JSONObject getJson() {
 		JSONObject managerJson = new JSONObject();
 		List<JSONObject> employeesJson = new ArrayList<>();
-		JSONObject productJson = ((Assembly)product).getProductTree();
-		for(User employee:employees){
-			employeesJson.add(((Employee)employee).getJson());
-		}
+		JSONObject productJson;
+		if(product!=null)
+			productJson = ((Assembly)product).getProductTree();
+		else
+			productJson=null;
+		if(employees!=null){
+			for(User employee:employees){
+				employeesJson.add(((Employee)employee).getJson());
+			}
+		}else
+			employeesJson=null;
+
+
 		managerJson.put("Id",getId());
 		managerJson.put("Username",getUsername());
 		managerJson.put("password",getPassword());
