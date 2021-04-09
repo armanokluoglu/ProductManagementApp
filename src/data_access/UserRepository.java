@@ -107,4 +107,13 @@ public class UserRepository {
         users.add(user);
         return user;
     }
+
+    public int findBiggestId(){
+        int biggestID =0;
+        for(User user:users){
+            if(user.getId()>biggestID)
+                biggestID=user.getId();
+        }
+        return biggestID;
+    }
 }

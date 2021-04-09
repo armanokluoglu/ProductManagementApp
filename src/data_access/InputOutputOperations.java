@@ -165,7 +165,9 @@ public class InputOutputOperations {
 			org.json.simple.JSONObject usersJson = (org.json.simple.JSONObject) obj;
 			org.json.simple.JSONArray admins = (org.json.simple.JSONArray) usersJson.get("ALLUSERS");
 			List<User> users = parseUserArray(admins);
-			return new UserRepository(users);
+			UserRepository repository = new UserRepository(users);
+			User.setId_counter(repository.findBiggestId()+1);
+			return repository;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
