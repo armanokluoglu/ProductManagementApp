@@ -56,13 +56,10 @@ public class InputOutputOperations {
 		List<JSONObject> partsJson = new ArrayList<>();
 
 		List<Product> assemblies = productRepository.findAllAssemblies();
-		List<Product> lonelyParts = productRepository.findLonelyParts();
 		for (Product product : assemblies) {
 			assembliesJson.add(((Assembly) product).getProductTree());
 		}
-		for (Product product : lonelyParts) {
-			partsJson.add(((Part) product).getJson());
-		}
+		
 		productsJSON.put("ASSEMBLIES", assembliesJson);
 		productsJSON.put("PARTS", partsJson);
 		return productsJSON;
