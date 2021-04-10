@@ -135,7 +135,8 @@ public class Assembly extends Product {
 			assemblies.forEach(entry -> products.add(Assembly.parseJson((org.json.simple.JSONObject) entry)));
 		}
 		Assembly assembly = new Assembly(name, number);
-		assembly.setProducts(products);
+		for(Product product:products)
+			assembly.addProduct(product);
 		return assembly;
 	}
 }
