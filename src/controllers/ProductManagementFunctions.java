@@ -4,12 +4,7 @@ import java.util.List;
 import data_access.InputOutputOperations;
 import data_access.ProductRepository;
 import data_access.UserRepository;
-import domain.Admin;
-import domain.Assembly;
-import domain.Manager;
-import domain.Part;
-import domain.Product;
-import domain.User;
+import domain.*;
 import utilities.AlreadyExistsException;
 import utilities.CatalogueEntry;
 import utilities.NotFoundException;
@@ -37,7 +32,9 @@ public class ProductManagementFunctions {
 		Product newPart = new Part(entry);
 		if(userRepository.existUserName(username))
 			throw new AlreadyExistsException("employee already exist");
-		((Manager) currentUser).createEmployeeAndAssignPart(username, password, newPart);
+		User user = new Employee(username,password);
+		userRepository.save(user);
+		((Manager) currentUser).createEmployeeAndAssignPart(user.getUsername(), user.getPassword(), newPart);
 		((Manager) currentUser).addAnotherProductToProduct(newPart);
 	}
 
