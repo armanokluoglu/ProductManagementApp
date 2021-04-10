@@ -1,6 +1,9 @@
 package domain;
 
+import java.lang.ref.PhantomReference;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -138,5 +141,41 @@ public class Assembly extends Product {
 		for(Product product:products)
 			assembly.addProduct(product);
 		return assembly;
+	}
+	public List<Product> getAllProductsSeperatly(){
+		List<Product> allProducts = new ArrayList<>();
+		for(Product product:products){
+			if(product instanceof Part)
+				allProducts.add(product);
+			if(product instanceof Assembly)
+				allProducts.addAll(((Assembly)product).getAllProductsSeperatly());
+		}
+		allProducts.add(this);
+		return allProducts;
+	}
+
+	public List<Product> getAssembliesInProducts(){
+		List<Product> assemblies = new ArrayList<>();
+		for (Product product : products) {
+			if (product instanceof Assembly)
+				assemblies.addAll(((Assembly) product).getAssembliesInProducts());
+			else
+				return Arrays.asList(this);
+		}
+		assemblies.add(this);
+		return assemblies;
+	}
+	public List<Product> getPartsInProducts(){
+		List<Product> assemblies = getAssembliesInProducts();
+		List<Product> parts= new ArrayList<>();
+		for (Product product : assemblies) {
+			for(Product product1:((Assembly)product).getProducts()){
+				if (product1 instanceof Part)
+					parts.add(product1);
+			}
+
+
+		}
+		return parts;
 	}
 }

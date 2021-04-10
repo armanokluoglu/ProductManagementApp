@@ -19,30 +19,38 @@ public class ProductRepository {
 		this.entries = entries;
 	}
 
-	public Product findAssemblyByNumber(int number) throws NotFoundException {
+	public List<Product> findAllAssemblies(){
+		List<Product> assemblies = new ArrayList<>();
 		for (Product product : products) {
+			if (product instanceof Assembly)
+				assemblies.addAll(((Assembly) product).getAssembliesInProducts());
+		}
+		return assemblies;
+	}
+	public List<Product> findAllParts(){
+		List<Product> assemblies = findAllAssemblies();
+		List<Product> parts= new ArrayList<>();
+		for (Product product : assemblies) {
+			parts.addAll(((Assembly)product).getPartsInProducts());
+		}
+		return parts;
+	}
+
+	public Product findAssemblyByNumber(int number) throws NotFoundException {
+		for (Product product : findAllAssemblies()) {
 			if (product instanceof Assembly && product.getNumber() == number)
 				return product;
 		}
 		throw new NotFoundException("Assembly with the number not found.");
 	}
 
-	public List<Product> findAllAssemblies() {
-		List<Product> assemblies = new ArrayList<>();
-		for (Product product : products) {
-			if (product instanceof Assembly)
-				assemblies.add(product);
+	public Product findPartByNumber(int number) throws NotFoundException {
+		List<Product> parts = findAllParts();
+		for(Product product:parts){
+			if(product instanceof Part && product.getNumber()==number)
+				return product;
 		}
-		return assemblies;
-	}
-
-	public List<Product> findAllParts() {
-		List<Product> assemblies = new ArrayList<>();
-		for (Product product : products) {
-			if (product instanceof Part)
-				assemblies.add(product);
-		}
-		return assemblies;
+		throw new NotFoundException("part not found");
 	}
 
 	public List<Product> findAssemblyParts(Product assembly) {
@@ -80,7 +88,7 @@ public class ProductRepository {
 	}
 
 	public boolean isAssemblyExistByNameAndNumber(String name,int number){
-		for(Product product:products){
+		for(Product product:findAllAssemblies()){
 			if(product.getName().equals(name) && product.getNumber()==number)
 				return true;
 		}

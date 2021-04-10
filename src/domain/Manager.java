@@ -2,6 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import data_access.ProductRepository;
 import org.json.JSONObject;
 
 import utilities.AlreadyExistsException;
@@ -41,8 +43,7 @@ public class Manager extends User {
 		((Assembly) product).addProduct(anotherProduct);
 	}
 
-	public void createEmployeeAndAssignPart(String username, String password, Product newPart) {
-		User employee = new Employee(username, password);
+	public void createEmployeeAndAssignPart(User employee, Product newPart) {
 		((Employee) employee).setPart(newPart);
 		List<User> employees = getEmployees();
 		employees.add(employee);
@@ -111,7 +112,7 @@ public class Manager extends User {
 		return managerJson;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson) {
+	public static User parseJson(org.json.simple.JSONObject userJson, ProductRepository productRepository) throws NotFoundException {
 		String userName = (String) userJson.get("Username");
 		String password = (String) userJson.get("password");
 		int id = ((Long) userJson.get("Id")).intValue();
@@ -126,10 +127,17 @@ public class Manager extends User {
 
 		List<User> employees = new ArrayList<>();
 		if (employeesJson.size() > 0) {
-			employeesJson.forEach(entry -> employees.add(Employee.parseJson((org.json.simple.JSONObject) entry)));
+			employeesJson.forEach(entry -> {
+				try {
+					employees.add(Employee.parseJson((org.json.simple.JSONObject) entry,productRepository));
+				} catch (NotFoundException e) {
+					System.out.println(e.getMessage()); ;
+				}
+			});
 		}
 		Manager manager = new Manager(id, userName, password);
 		manager.setEmployees(employees);
+		 assembly = productRepository.findAssemblyByNumber(assembly.getNumber());
 		manager.setProduct(assembly);
 		return manager;
 	}

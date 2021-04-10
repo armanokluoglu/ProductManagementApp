@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import data_access.ProductRepository;
 import org.json.JSONObject;
+import utilities.NotFoundException;
 
 @SuppressWarnings("unchecked")
 public class Admin extends User {
@@ -85,14 +88,20 @@ public class Admin extends User {
 		this.managers = managers;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson) {
+	public static User parseJson(org.json.simple.JSONObject userJson, ProductRepository productRepository) {
 		String userName = (String) userJson.get("Username");
 		String password = (String) userJson.get("password");
 		int id = ((Long) userJson.get("Id")).intValue();
 		org.json.simple.JSONArray managersJson = (org.json.simple.JSONArray) userJson.get("MANAGERS");
 		List<User> managers = new ArrayList<>();
 		if (managersJson.size() > 0) {
-			managersJson.forEach(entry -> managers.add(Manager.parseJson((org.json.simple.JSONObject) entry)));
+			managersJson.forEach(entry -> {
+				try {
+					managers.add(Manager.parseJson((org.json.simple.JSONObject) entry,productRepository));
+				} catch (NotFoundException e) {
+					System.out.println(e.getMessage());
+				}
+			});
 		}
 		Admin admin = new Admin(id, userName, password);
 		Set<Product> adminProducts = new HashSet<>();

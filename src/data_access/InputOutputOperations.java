@@ -120,6 +120,13 @@ public class InputOutputOperations {
 					(org.json.simple.JSONObject) productsAndCatalogEntries.get("catalogEntries"));
 			List<Product> products = inputProducts(
 					(org.json.simple.JSONObject) productsAndCatalogEntries.get("assembliesAndParts"));
+//			List<Product> allProducts = new ArrayList<>();
+//			for(Product product:products){
+//				if(product instanceof Part)
+//					allProducts.add(product);
+//				if(product instanceof Assembly)
+//					allProducts.addAll(((Assembly) product).getAllProductsSeperatly());
+//			}
 			return new ProductRepository(products, catalogueEntries);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -147,13 +154,14 @@ public class InputOutputOperations {
 	}
 
 	public UserRepository inputUsers() {
+		ProductRepository productRepository = inputProducts();
 		JSONParser jsonParser = new JSONParser();
 
 		try (FileReader reader = new FileReader("users.json")) {
 			Object obj = jsonParser.parse(reader);
 			org.json.simple.JSONObject usersJson = (org.json.simple.JSONObject) obj;
 			org.json.simple.JSONArray admins = (org.json.simple.JSONArray) usersJson.get("ALLUSERS");
-			List<User> users = parseUserArray(admins);
+			List<User> users = parseUserArray(admins,productRepository);
 			UserRepository repository = new UserRepository(users);
 			User.setId_counter(repository.findBiggestId() + 1);
 			return repository;
@@ -167,10 +175,10 @@ public class InputOutputOperations {
 		return null;
 	}
 
-	private List<User> parseUserArray(org.json.simple.JSONArray usersJson) {
+	private List<User> parseUserArray(org.json.simple.JSONArray usersJson,ProductRepository productRepository) {
 		List<User> admins = new ArrayList<>();
 		List<User> users = new ArrayList<>();
-		usersJson.forEach(entry -> admins.add(Admin.parseJson((org.json.simple.JSONObject) entry)));
+		usersJson.forEach(entry -> admins.add(Admin.parseJson((org.json.simple.JSONObject) entry,productRepository)));
 		for (User admin : admins) {
 			users.addAll(((Admin) admin).getManagers());
 			users.addAll(((Admin) admin).getAllEmployees());

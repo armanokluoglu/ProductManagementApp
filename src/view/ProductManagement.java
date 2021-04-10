@@ -121,6 +121,8 @@ public class ProductManagement {
 			adminMenu(scanner);
 			break;
 		case 6:
+			productFunctions.saveUsers();
+			productFunctions.saveProducts();
 			start();
 			break;
 		case 7:
@@ -170,6 +172,8 @@ public class ProductManagement {
 			adminMenu(scanner);
 			break;
 		case 4:
+			productFunctions.saveUsers();
+			productFunctions.saveProducts();
 			start();
 			break;
 		case 0:
@@ -270,6 +274,8 @@ public class ProductManagement {
 			managerMenu(scanner);
 			break;
 		case 7:
+			productFunctions.saveUsers();
+			productFunctions.saveProducts();
 			start();
 			break;
 		case 0:
@@ -376,6 +382,8 @@ public class ProductManagement {
 			employeeMenu(scanner);
 			break;
 		case 3:
+			productFunctions.saveUsers();
+			productFunctions.saveProducts();
 			start();
 			break;
 		case 0:
@@ -416,6 +424,8 @@ public class ProductManagement {
 			employeeMenu(scanner);
 			break;
 		case 5:
+			productFunctions.saveUsers();
+			productFunctions.saveProducts();
 			start();
 			break;
 		case 0:

@@ -34,7 +34,9 @@ public class ProductManagementFunctions {
 			throw new AlreadyExistsException("employee already exist");
 		User user = new Employee(username,password);
 		userRepository.save(user);
-		((Manager) currentUser).createEmployeeAndAssignPart(user.getUsername(), user.getPassword(), newPart);
+		Product assembly = productRepository.findAssemblyByNumber(((Manager)currentUser).getProduct().getNumber());
+		((Assembly)assembly).addProduct(newPart);
+		((Manager) currentUser).createEmployeeAndAssignPart(user, newPart);
 		((Manager) currentUser).addAnotherProductToProduct(newPart);
 	}
 

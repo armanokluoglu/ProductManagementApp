@@ -1,7 +1,10 @@
 package domain;
 
 import java.util.ArrayList;
+
+import data_access.ProductRepository;
 import org.json.JSONObject;
+import utilities.NotFoundException;
 import utilities.Status;
 
 public class Employee extends User {
@@ -48,12 +51,13 @@ public class Employee extends User {
 		return employeeJson;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson){
+	public static User parseJson(org.json.simple.JSONObject userJson, ProductRepository productRepository) throws NotFoundException {
 		String userName = (String) userJson.get("Username");
 		String password = (String)userJson.get("password");
 		int id = ((Long)userJson.get("Id")).intValue();
 		//org.json.simple.JSONArray employeesJson = (org.json.simple.JSONArray) userJson.get("EMPLOYEES");
 		Product part = Part.parseJson((org.json.simple.JSONObject) userJson.get("Part"));
+		part = productRepository.findPartByNumber(part.getNumber());
 		Employee employee = new Employee(id,userName,password);
 		employee.setPart(part);
 		return employee;
