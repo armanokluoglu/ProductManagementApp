@@ -14,13 +14,13 @@ public abstract class Product implements StatusChangeCallback {
 	private double cost;
 	private StatusState status;
 	private StatusChangeCallback callback;
-	
+
 	public Product(String name, int number) {
 		setName(name);
 		setNumber(number);
 		setStatus(new NotStartedState(this));
 	}
-	
+
 	public Product(String name, int number, double cost) {
 		setName(name);
 		setNumber(number);
@@ -31,15 +31,16 @@ public abstract class Product implements StatusChangeCallback {
 	public void changeStatus(Status status) {
 		StatusChangeCallback callback = getCallback();
 		StatusState newStatus = null;
-		if(status == getStatus().getEnum()) {
-			System.out.println("Status of '" + getName() + "' not changed as it was already: " + getStatus().toString());
+		if (status == getStatus().getEnum()) {
+			System.out
+					.println("Status of '" + getName() + "' not changed as it was already: " + getStatus().toString());
 			System.out.println();
 			return;
-		} else if(status == Status.NOT_STARTED) {
+		} else if (status == Status.NOT_STARTED) {
 			newStatus = new NotStartedState(this);
-		} else if(status == Status.IN_PROGRESS) {
+		} else if (status == Status.IN_PROGRESS) {
 			newStatus = new InProgressState(this);
-		} else if(status == Status.COMPLETE) {
+		} else if (status == Status.COMPLETE) {
 			newStatus = new CompleteState(this);
 		}
 		System.out.println("Status of '" + getName() + "' changed to: " + newStatus.toString());
@@ -79,7 +80,7 @@ public abstract class Product implements StatusChangeCallback {
 	protected void setStatus(StatusState status) {
 		this.status = status;
 	}
-	
+
 	public StatusChangeCallback getCallback() {
 		return callback;
 	}

@@ -16,12 +16,8 @@ import java.util.List;
 public class InputOutputOperations {
 
 	private static FileWriter file;
-	private ProductRepository productRepository;
-	private UserRepository userRepository;
 
 	public InputOutputOperations() {
-		this.productRepository = inputProducts();
-		this.userRepository = inputUsers();
 	}
 
 	public void outputProducts(ProductRepository productRepository) {
@@ -166,7 +162,7 @@ public class InputOutputOperations {
 			org.json.simple.JSONArray admins = (org.json.simple.JSONArray) usersJson.get("ALLUSERS");
 			List<User> users = parseUserArray(admins);
 			UserRepository repository = new UserRepository(users);
-			User.setId_counter(repository.findBiggestId()+1);
+			User.setId_counter(repository.findBiggestId() + 1);
 			return repository;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -183,7 +179,7 @@ public class InputOutputOperations {
 		List<User> users = new ArrayList<>();
 		usersJson.forEach(entry -> admins.add(Admin.parseJson((org.json.simple.JSONObject) entry)));
 		for (User admin : admins) {
-			users.addAll(((Admin) admin).getAllManagers());
+			users.addAll(((Admin) admin).getManagers());
 			users.addAll(((Admin) admin).getAllEmployees());
 			users.add(admin);
 		}

@@ -12,12 +12,12 @@ public class CompleteState extends StatusState {
 	public String toString() {
 		return "Complete";
 	}
-	
+
 	@Override
 	public Status getEnum() {
 		return Status.COMPLETE;
 	}
-	
+
 	@Override
 	public int getValue() {
 		return 2;

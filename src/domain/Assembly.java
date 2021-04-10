@@ -2,13 +2,12 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-import utilities.CatalogueEntry;
 import utilities.Status;
 import utilities.StatusState;
 
+@SuppressWarnings("unchecked")
 public class Assembly extends Product {
 
 	private List<Product> products;
@@ -26,42 +25,32 @@ public class Assembly extends Product {
 		setProducts(products);
 	}
 
-	public Product removeProduct(Product product) {
-		List<Product> products = getProducts();
-		boolean removed = products.remove(product);
-		if (removed) {
-			setProducts(products);
-			return product;
-		}
-		return null;
-	}
-
 	public JSONObject getProductTree() {
 		List<Product> products = getProducts();
 		List<JSONObject> parts = new ArrayList<>();
 		List<JSONObject> assemblies = new ArrayList<>();
 
 		JSONObject productTree = new JSONObject();
-		productTree.put("number",getNumber());
-		productTree.put("name",getName());
-		productTree.put("status",getStatus());
-		productTree.put("cost",getCost());
-		for(Product product:products){
-			if(product instanceof Part){
+		productTree.put("number", getNumber());
+		productTree.put("name", getName());
+		productTree.put("status", getStatus());
+		productTree.put("cost", getCost());
+		for (Product product : products) {
+			if (product instanceof Part) {
 				JSONObject part = new JSONObject();
-				part.put("number",product.getNumber());
-				part.put("name",product.getName());
-				part.put("status",product.getStatus());
-				part.put("cost",product.getCost());
+				part.put("number", product.getNumber());
+				part.put("name", product.getName());
+				part.put("status", product.getStatus());
+				part.put("cost", product.getCost());
 				parts.add(part);
-			}else
-				assemblies.add(((Assembly)product).getProductTree());
+			} else
+				assemblies.add(((Assembly) product).getProductTree());
 		}
-		productTree.put("PARTS",parts);
-		productTree.put("ASSEMBLIES",assemblies);
+		productTree.put("PARTS", parts);
+		productTree.put("ASSEMBLIES", assemblies);
 		return productTree;
 	}
-	
+
 	public void printProduct(JSONObject json, int indentation) {
 		String indentString = new String(new char[indentation]).replace("\0", "  ");
 		String name = (String) json.get("name");
@@ -131,21 +120,20 @@ public class Assembly extends Product {
 		}
 		return getStatus();
 	}
-	
-	public static Assembly parseJson(org.json.simple.JSONObject assemblyJson){
+
+	public static Assembly parseJson(org.json.simple.JSONObject assemblyJson) {
 		String name = (String) assemblyJson.get("name");
-		double cost = ((Long)assemblyJson.get("cost")).doubleValue();
-		int number = ((Long)assemblyJson.get("number")).intValue();
+		int number = ((Long) assemblyJson.get("number")).intValue();
 		List<Product> products = new ArrayList<>();
 		org.json.simple.JSONArray parts = (org.json.simple.JSONArray) assemblyJson.get("PARTS");
 		org.json.simple.JSONArray assemblies = (org.json.simple.JSONArray) assemblyJson.get("ASSEMBLIES");
-		if (parts.size()>0){
-			parts.forEach( entry -> products.add(Part.parseJson( (org.json.simple.JSONObject) entry ) ));
+		if (parts.size() > 0) {
+			parts.forEach(entry -> products.add(Part.parseJson((org.json.simple.JSONObject) entry)));
 		}
-		if(assemblies.size()>0){
-			assemblies.forEach( entry -> products.add(Assembly.parseJson( (org.json.simple.JSONObject) entry ) ));
+		if (assemblies.size() > 0) {
+			assemblies.forEach(entry -> products.add(Assembly.parseJson((org.json.simple.JSONObject) entry)));
 		}
-		Assembly assembly = new Assembly(name,number);
+		Assembly assembly = new Assembly(name, number);
 		assembly.setProducts(products);
 		return assembly;
 	}

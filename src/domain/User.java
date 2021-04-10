@@ -8,13 +8,14 @@ public abstract class User {
 	private String username;
 	private String password;
 	private static int id_counter = 5;
-	
+
 	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.id = User.id_counter;
 		User.id_counter++;
 	}
+
 	public User(int id, String username, String password) {
 		this.username = username;
 		this.password = password;
@@ -50,5 +51,5 @@ public abstract class User {
 	}
 
 	public abstract JSONObject getJson();
-	
+
 }

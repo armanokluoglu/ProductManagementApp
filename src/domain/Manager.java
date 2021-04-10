@@ -3,72 +3,50 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
-import utilities.CatalogueEntry;
 
-import javax.swing.*;
-
+@SuppressWarnings("unchecked")
 public class Manager extends User {
 
 	private List<User> employees;
 	private Product product;
-	
+
 	public Manager(String username, String password) {
 		super(username, password);
 	}
 
 	public Manager(int id, String username, String password) {
-		super(id,username, password);
+		super(id, username, password);
 	}
 
 	public JSONObject getProductTree() {
-		return ((Assembly) product).getProductTree();
+		return getProduct() != null ? ((Assembly) getProduct()).getProductTree() : null;
 	}
-	
+
 	public void printProductTree() {
-		((Assembly) product).printProduct(getProductTree(), 0);
-	}
-	
-	public Product createPart(CatalogueEntry entry) {
-		Product part = new Part(entry);
-		Product product = getProduct();
-		((Assembly) product).addProduct(part);
-		return part;
+		if (getProduct() != null) {
+			((Assembly) product).printProduct(getProductTree(), 0);
+		}
 	}
 
-	public Product addPart(Product part) {
+	public void addAnotherProductToProduct(Product anotherProduct) {
 		Product product = getProduct();
-		((Assembly) product).addProduct(part);
-		return part;
+		((Assembly) product).addProduct(anotherProduct);
 	}
 
-	public Product addAssembly(Product assembly) {
-		Product product = getProduct();
-		((Assembly) product).addProduct(assembly);
-		return assembly;
+	public void createEmployeeAndAssignPart(String username, String password, Product newPart) {
+		User employee = new Employee(username, password);
+		((Employee) employee).setPart(newPart);
 	}
-	
-	public Product addProductToAssembly(Product prod, int mainAssemblyNumber) {
-		Product product = getProduct();
-		Product mainAssembly = findAssemblyConnectedToProduct(mainAssemblyNumber, product);
-		((Assembly) mainAssembly).addProduct(prod);
-		return mainAssembly;
+
+	public void assignAssemblyToManager(Product newAssembly, User manager) {
+		((Manager) manager).setProduct(newAssembly);
 	}
-	
-	public User createEmployee(String username, String password) {
-		User employee = new Employee(username,password);
-		employees.add(employee);
-		return employee;
-	}
-	
-	public void assignPartToEmployee(User employee, Product part) {
-		((Employee)employee).setPart(part);
-	}
-	
+
 	public Product findAssemblyConnectedToProduct(int assemblyNumber, Product product) {
-		if(product instanceof Part) {
+		if (product instanceof Part) {
 			return null;
 		}
-		if(product.getNumber() == assemblyNumber) {
+		if (product.getNumber() == assemblyNumber) {
 			return product;
 		} else {
 			List<Product> products = ((Assembly) product).getProducts();
@@ -100,47 +78,46 @@ public class Manager extends User {
 		JSONObject managerJson = new JSONObject();
 		List<JSONObject> employeesJson = new ArrayList<>();
 		JSONObject productJson;
-		if(product!=null)
-			productJson = ((Assembly)product).getProductTree();
+		if (product != null)
+			productJson = ((Assembly) product).getProductTree();
 		else
-			productJson=null;
-		if(employees!=null){
-			for(User employee:employees){
-				employeesJson.add(((Employee)employee).getJson());
+			productJson = null;
+		if (employees != null) {
+			for (User employee : employees) {
+				employeesJson.add(((Employee) employee).getJson());
 			}
-		}else
-			employeesJson=null;
+		} else
+			employeesJson = null;
 
-
-		managerJson.put("Id",getId());
-		managerJson.put("Username",getUsername());
-		managerJson.put("password",getPassword());
-		managerJson.put("PRODUCT",productJson);
-		managerJson.put("EMPLOYEES",employeesJson);
+		managerJson.put("Id", getId());
+		managerJson.put("Username", getUsername());
+		managerJson.put("password", getPassword());
+		managerJson.put("PRODUCT", productJson);
+		managerJson.put("EMPLOYEES", employeesJson);
 		return managerJson;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson){
+	public static User parseJson(org.json.simple.JSONObject userJson) {
 		String userName = (String) userJson.get("Username");
-		String password = (String)userJson.get("password");
-		int id = ((Long)userJson.get("Id")).intValue();
+		String password = (String) userJson.get("password");
+		int id = ((Long) userJson.get("Id")).intValue();
 		org.json.simple.JSONArray employeesJson = (org.json.simple.JSONArray) userJson.get("EMPLOYEES");
 
 		org.json.simple.JSONObject productJson = (org.json.simple.JSONObject) userJson.get("PRODUCT");
 		Product assembly;
-		if(productJson!=null)
+		if (productJson != null)
 			assembly = Assembly.parseJson(productJson);
 		else
-			assembly=null;
+			assembly = null;
 
 		List<User> employees = new ArrayList<>();
-		if(employeesJson.size()>0){
-			employeesJson.forEach( entry -> employees.add(Employee.parseJson( (org.json.simple.JSONObject) entry)));
+		if (employeesJson.size() > 0) {
+			employeesJson.forEach(entry -> employees.add(Employee.parseJson((org.json.simple.JSONObject) entry)));
 		}
-		Manager manager = new Manager(id,userName,password);
+		Manager manager = new Manager(id, userName, password);
 		manager.setEmployees(employees);
 		manager.setProduct(assembly);
 		return manager;
 	}
-	
+
 }
