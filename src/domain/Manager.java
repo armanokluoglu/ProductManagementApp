@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 
+import utilities.AlreadyExistsException;
+import utilities.NotFoundException;
+
 @SuppressWarnings("unchecked")
 public class Manager extends User {
 
@@ -12,10 +15,12 @@ public class Manager extends User {
 
 	public Manager(String username, String password) {
 		super(username, password);
+		setEmployees(new ArrayList<>());
 	}
 
 	public Manager(int id, String username, String password) {
 		super(id, username, password);
+		setEmployees(new ArrayList<>());
 	}
 
 	public JSONObject getProductTree() {
@@ -28,17 +33,26 @@ public class Manager extends User {
 		}
 	}
 
-	public void addAnotherProductToProduct(Product anotherProduct) {
+	public void addAnotherProductToProduct(Product anotherProduct) throws NotFoundException {
 		Product product = getProduct();
+		if (getProduct() == null) {
+			throw new NotFoundException("Manager does not have an assigned assembly.");
+		}
 		((Assembly) product).addProduct(anotherProduct);
 	}
 
 	public void createEmployeeAndAssignPart(String username, String password, Product newPart) {
 		User employee = new Employee(username, password);
 		((Employee) employee).setPart(newPart);
+		List<User> employees = getEmployees();
+		employees.add(employee);
+		setEmployees(employees);
 	}
 
-	public void assignAssemblyToManager(Product newAssembly, User manager) {
+	public void assignAssemblyToManager(Product newAssembly, User manager) throws AlreadyExistsException {
+		if (((Manager) manager).getProduct() != null) {
+			throw new AlreadyExistsException("Manager already has an assigned assembly.");
+		}
 		((Manager) manager).setProduct(newAssembly);
 	}
 

@@ -39,7 +39,9 @@ public class Admin extends User {
 		List<User> managers = getManagers();
 		List<User> employees = new ArrayList<>();
 		for (User manager : managers)
-			employees.addAll(((Manager) manager).getEmployees());
+			if (((Manager) manager).getEmployees() != null) {
+				employees.addAll(((Manager) manager).getEmployees());
+			}
 		return employees;
 	}
 

@@ -23,6 +23,7 @@ public class Assembly extends Product {
 		product.setCallback(this);
 		products.add(product);
 		setProducts(products);
+		this.onChildStatusChange();
 	}
 
 	public JSONObject getProductTree() {

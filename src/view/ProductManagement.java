@@ -320,6 +320,8 @@ public class ProductManagement {
 					+ managerNumber + ". New assembly added to my assembly.");
 		} catch (NotFoundException e) {
 			System.out.println(e.getMessage());
+		} catch (AlreadyExistsException e) {
+			System.out.println(e.getMessage());
 		} 
 		productFunctions.saveUsers();
 		productFunctions.saveProducts();

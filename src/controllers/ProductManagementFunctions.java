@@ -40,7 +40,7 @@ public class ProductManagementFunctions {
 	}
 
 	public void createAssemblyAndAssignToManagerForAssemblyOfManager(String newAssemblyName, int newAssemblyNumber,
-			int managerNumber, User currentUser) throws NotFoundException {
+			int managerNumber, User currentUser) throws NotFoundException, AlreadyExistsException {
 		Product newAssembly = new Assembly(newAssemblyName, newAssemblyNumber);
 		User manager = userRepository.findManagerById(managerNumber);
 		((Manager) currentUser).addAnotherProductToProduct(newAssembly);
