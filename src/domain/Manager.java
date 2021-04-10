@@ -125,7 +125,13 @@ public class Manager extends User {
 		String password = (String)userJson.get("password");
 		int id = ((Long)userJson.get("Id")).intValue();
 		org.json.simple.JSONArray employeesJson = (org.json.simple.JSONArray) userJson.get("EMPLOYEES");
-		Product assembly = Assembly.parseJson((org.json.simple.JSONObject) userJson.get("PRODUCT"));
+
+		org.json.simple.JSONObject productJson = (org.json.simple.JSONObject) userJson.get("PRODUCT");
+		Product assembly;
+		if(productJson!=null)
+			assembly = Assembly.parseJson(productJson);
+		else
+			assembly=null;
 
 		List<User> employees = new ArrayList<>();
 		if(employeesJson.size()>0){
