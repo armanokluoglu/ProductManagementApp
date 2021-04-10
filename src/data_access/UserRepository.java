@@ -4,6 +4,7 @@ import domain.Admin;
 import domain.Employee;
 import domain.Manager;
 import domain.User;
+import utilities.AlreadyExistsException;
 import utilities.NotFoundException;
 import utilities.PasswordIncorrectException;
 
@@ -77,7 +78,9 @@ public class UserRepository {
 		return employees;
 	}
 
-	public User save(User user) {
+	public User save(User user) throws AlreadyExistsException {
+		if(existUserName(user.getUsername()))
+			throw new AlreadyExistsException("User already exist in the system");
 		users.add(user);
 		return user;
 	}
@@ -89,5 +92,12 @@ public class UserRepository {
 				biggestID = user.getId();
 		}
 		return biggestID;
+	}
+	public boolean existUserName(String userName){
+		for(User user:users){
+			if(user.getUsername().equals(userName))
+				return true;
+		}
+		return false;
 	}
 }

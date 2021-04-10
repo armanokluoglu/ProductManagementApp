@@ -32,15 +32,20 @@ public class ProductManagementFunctions {
 	}
 
 	public void createPartAndEmployeeForAssemblyOfManager(int catalogueNumberForNewPart, String username,
-			String password, User currentUser) throws NotFoundException {
+			String password, User currentUser) throws NotFoundException, AlreadyExistsException {
 		CatalogueEntry entry = productRepository.findCatalogueEntryByNumber(catalogueNumberForNewPart);
 		Product newPart = new Part(entry);
-		((Manager) currentUser).addAnotherProductToProduct(newPart);
+		if(userRepository.existUserName(username))
+			throw new AlreadyExistsException("employee already exist");
 		((Manager) currentUser).createEmployeeAndAssignPart(username, password, newPart);
+		((Manager) currentUser).addAnotherProductToProduct(newPart);
 	}
 
 	public void createAssemblyAndAssignToManagerForAssemblyOfManager(String newAssemblyName, int newAssemblyNumber,
 			int managerNumber, User currentUser) throws NotFoundException, AlreadyExistsException {
+
+		if(productRepository.isAssemblyExistByNameAndNumber(newAssemblyName,newAssemblyNumber))
+			throw new AlreadyExistsException("assembly already exist");
 		Product newAssembly = new Assembly(newAssemblyName, newAssemblyNumber);
 		User manager = userRepository.findManagerById(managerNumber);
 		((Manager) currentUser).addAnotherProductToProduct(newAssembly);
@@ -95,7 +100,7 @@ public class ProductManagementFunctions {
 		return userRepository;
 	}
 
-	public User createManagerForAdmin(String username, String password, User currentUser) {
+	public User createManagerForAdmin(String username, String password, User currentUser) throws AlreadyExistsException {
 		User manager = ((Admin) currentUser).createManager(username, password);
 		userRepository.save(manager);
 		return manager;

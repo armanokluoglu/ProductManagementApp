@@ -53,7 +53,6 @@ public class InputOutputOperations {
 	private JSONObject getProductJson(ProductRepository productRepository) {
 		JSONObject productsJSON = new JSONObject();
 		List<JSONObject> assembliesJson = new ArrayList<>();
-		List<JSONObject> partsJson = new ArrayList<>();
 
 		List<Product> assemblies = productRepository.findAllAssemblies();
 		for (Product product : assemblies) {
@@ -61,7 +60,6 @@ public class InputOutputOperations {
 		}
 		
 		productsJSON.put("ASSEMBLIES", assembliesJson);
-		productsJSON.put("PARTS", partsJson);
 		return productsJSON;
 	}
 
@@ -144,9 +142,7 @@ public class InputOutputOperations {
 	private List<Product> inputProducts(org.json.simple.JSONObject productsJson) {
 		List<Product> products = new ArrayList<>();
 		org.json.simple.JSONArray assemblies = (org.json.simple.JSONArray) productsJson.get("ASSEMBLIES");
-		org.json.simple.JSONArray parts = (org.json.simple.JSONArray) productsJson.get("PARTS");
 		assemblies.forEach(entry -> products.add(Assembly.parseJson((org.json.simple.JSONObject) entry)));
-		parts.forEach(entry -> products.add(Part.parseJson((org.json.simple.JSONObject) entry)));
 		return products;
 	}
 

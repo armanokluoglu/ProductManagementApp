@@ -78,4 +78,20 @@ public class ProductRepository {
 		entries.add(entry);
 		return entry;
 	}
+
+	public boolean isAssemblyExistByNameAndNumber(String name,int number){
+		for(Product product:products){
+			if(product.getName().equals(name) && product.getNumber()==number)
+				return true;
+		}
+		return false;
+	}
+
+	public boolean isCatalogEntryExistByNameAndId(String name,int number){
+		for(CatalogueEntry entry:entries){
+			if(entry.getName().equals(name) && entry.getNumber()==number)
+				return true;
+		}
+		return false;
+	}
 }

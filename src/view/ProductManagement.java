@@ -137,7 +137,12 @@ public class ProductManagement {
 		String username = scanner.next();
 		System.out.print("Please enter a manager password: ");
 		String password = scanner.next();
-		User createdManager = productFunctions.createManagerForAdmin(username, password, currentUser);
+		User createdManager = null;
+		try {
+			createdManager = productFunctions.createManagerForAdmin(username, password, currentUser);
+		} catch (AlreadyExistsException e) {
+			System.out.println(e.getMessage());
+		}
 		System.out.println("Manager with username " + createdManager.getUsername() + " created.");
 		productFunctions.saveUsers();
 		adminMenu(scanner);
@@ -293,6 +298,8 @@ public class ProductManagement {
 			System.out.println("Part created and assigned to new employee with username " + username
 					+ ". New part added to my assembly.");
 		} catch (NotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}
 		productFunctions.saveProducts();
