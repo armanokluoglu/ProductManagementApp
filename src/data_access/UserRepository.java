@@ -11,7 +11,7 @@ import utilities.PasswordIncorrectException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository {
+public class UserRepository implements IUserRepository{
 
 	private List<User> users;
 

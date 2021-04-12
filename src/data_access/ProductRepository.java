@@ -9,7 +9,7 @@ import utilities.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductRepository {
+public class ProductRepository implements IProductRepository {
 
 	private List<Product> products;
 	private List<CatalogueEntry> entries;
