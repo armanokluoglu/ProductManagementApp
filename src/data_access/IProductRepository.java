@@ -3,30 +3,29 @@ package data_access;
 import domain.Product;
 import utilities.CatalogueEntry;
 import utilities.NotFoundException;
-
 import java.util.List;
 
 public interface IProductRepository {
 
-    List<Product> findAllAssemblies();
+	List<Product> findAllAssemblies();
 
-    List<Product> findAllParts();
+	List<Product> findAllParts();
 
-    Product findAssemblyByNumber(int number) throws NotFoundException;
+	Product findAssemblyByNumber(int number) throws NotFoundException;
 
-    Product findPartByNumber(int number) throws NotFoundException;
+	Product findPartByNumber(int number) throws NotFoundException;
 
-    List<Product> findAssemblyParts(Product assembly);
+	List<Product> findAssemblyParts(Product assembly);
 
-    CatalogueEntry findCatalogueEntryByNumber(int number) throws NotFoundException;
+	CatalogueEntry findCatalogueEntryByNumber(int number) throws NotFoundException;
 
-    List<CatalogueEntry> getEntries();
+	List<CatalogueEntry> getEntries();
 
-    Product save(Product product);
+	Product save(Product product);
 
-    CatalogueEntry saveEntry(CatalogueEntry entry);
+	CatalogueEntry saveEntry(CatalogueEntry entry);
 
-    boolean isAssemblyExistByNameAndNumber(String name,int number);
+	boolean isAssemblyExistByNameAndNumber(String name, int number);
 
-    boolean isCatalogEntryExistByNameAndId(String name,int number);
+	boolean isCatalogEntryExistByNameAndId(String name, int number);
 }

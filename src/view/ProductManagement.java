@@ -8,12 +8,13 @@ import utilities.PasswordIncorrectException;
 import utilities.Status;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import controllers.IProductManagementFunctions;
 import controllers.ProductManagementFunctions;
 
 public class ProductManagement {
 
 	private User currentUser;
-	private ProductManagementFunctions productFunctions;
+	private IProductManagementFunctions productFunctions;
 
 	public ProductManagement(InputOutputOperations io) {
 		this.productFunctions = new ProductManagementFunctions(io);
@@ -109,15 +110,15 @@ public class ProductManagement {
 			productMenuForAdmin(scanner);
 			break;
 		case 3:
-			productFunctions.printAllManagersForAdmin(currentUser);
+			System.out.println(productFunctions.getAllManagersStringForAdmin(currentUser));
 			adminMenu(scanner);
 			break;
 		case 4:
-			productFunctions.printAllEmployeesForAdmin(currentUser);
+			System.out.println(productFunctions.getAllEmployeesStringForAdmin(currentUser));
 			adminMenu(scanner);
 			break;
 		case 5:
-			productFunctions.printAllProductTreesForAdmin(currentUser);
+			System.out.println(productFunctions.getAllProductTreesStringForAdmin(currentUser));
 			adminMenu(scanner);
 			break;
 		case 6:
@@ -185,12 +186,12 @@ public class ProductManagement {
 	}
 
 	private void addAssemblyToManagerMenu(Scanner scanner) {
-		productFunctions.printAllManagersForAdmin(currentUser);
+		System.out.println(productFunctions.getAllManagersStringForAdmin(currentUser));
 		System.out.print("Please select a manager from above and enter the id: ");
 		int managerId = scannerNextInt(scanner);
 		if (managerId == -1)
 			addAssemblyToManagerMenu(scanner);
-		productFunctions.printAllAssemblies();
+		System.out.println(productFunctions.getAllAssembliesString());
 		System.out.print("Please select an assembly from above and enter the number: ");
 		int productNumber = scannerNextInt(scanner);
 		if (productNumber == -1)
@@ -207,7 +208,7 @@ public class ProductManagement {
 	}
 
 	private void createAssemblyAndAssignToManagerMenuForAdmin(Scanner scanner) {
-		productFunctions.printAllManagersForAdmin(currentUser);
+		System.out.println(productFunctions.getAllManagersStringForAdmin(currentUser));
 		System.out.print("Please select a manager from above and enter the id: ");
 		int managerId = scannerNextInt(scanner);
 		if (managerId == -1)
@@ -262,15 +263,15 @@ public class ProductManagement {
 			createCatalogueMenu(scanner);
 			break;
 		case 4:
-			productFunctions.printCatalogues();
+			System.out.println(productFunctions.getCataloguesString());
 			managerMenu(scanner);
 			break;
 		case 5:
-			productFunctions.printProductTreeOfManager(currentUser);
+			System.out.println(productFunctions.getProductTreeStringOfManager(currentUser));
 			managerMenu(scanner);
 			break;
 		case 6:
-			productFunctions.printEmployeesOfManager(currentUser);
+			System.out.println(productFunctions.getEmployeesStringOfManager(currentUser));
 			managerMenu(scanner);
 			break;
 		case 7:
@@ -288,14 +289,14 @@ public class ProductManagement {
 	}
 
 	private void createPartAndEmployeeForMyAssemblyMenu(Scanner scanner) {
-		productFunctions.printCatalogues();
+		System.out.println(productFunctions.getCataloguesString());
 		System.out.print("Please select the number of the part from the catalogue above: ");
 		int catalogueNumberForNewPart = scannerNextInt(scanner);
 		if (catalogueNumberForNewPart == -1)
 			createPartAndEmployeeForMyAssemblyMenu(scanner);
-		System.out.print("Please enter a employee username: ");
+		System.out.print("Please enter an employee username: ");
 		String username = scanner.next();
-		System.out.print("Please enter a employee password: ");
+		System.out.print("Please enter an employee password: ");
 		String password = scanner.next();
 
 		try {
@@ -320,7 +321,7 @@ public class ProductManagement {
 		int newAssemblyNumber = scannerNextInt(scanner);
 		if (newAssemblyNumber == -1)
 			createAssemblyAndAssignToManagerForMyAssemblyMenu(scanner);
-		productFunctions.printAllManagersWithoutProducts();
+		System.out.println(productFunctions.getAllManagersWithoutProductsString());
 		System.out.print("Please select the manager to assign the assembly above and enter their id: ");
 		int managerNumber = scannerNextInt(scanner);
 		if (managerNumber == -1)
@@ -335,7 +336,7 @@ public class ProductManagement {
 			System.out.println(e.getMessage());
 		} catch (AlreadyExistsException e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 		productFunctions.saveUsers();
 		productFunctions.saveProducts();
 		managerMenu(scanner);

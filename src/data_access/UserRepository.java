@@ -7,11 +7,10 @@ import domain.User;
 import utilities.AlreadyExistsException;
 import utilities.NotFoundException;
 import utilities.PasswordIncorrectException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository implements IUserRepository{
+public class UserRepository implements IUserRepository {
 
 	private List<User> users;
 
@@ -79,7 +78,7 @@ public class UserRepository implements IUserRepository{
 	}
 
 	public User save(User user) throws AlreadyExistsException {
-		if(existUserName(user.getUsername()))
+		if (existUserName(user.getUsername()))
 			throw new AlreadyExistsException("User already exist in the system");
 		users.add(user);
 		return user;
@@ -93,9 +92,10 @@ public class UserRepository implements IUserRepository{
 		}
 		return biggestID;
 	}
-	public boolean existUserName(String userName){
-		for(User user:users){
-			if(user.getUsername().equals(userName))
+
+	public boolean existUserName(String userName) {
+		for (User user : users) {
+			if (user.getUsername().equals(userName))
 				return true;
 		}
 		return false;

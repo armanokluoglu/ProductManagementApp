@@ -2,10 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import data_access.ProductRepository;
+import data_access.IProductRepository;
 import org.json.JSONObject;
-
 import utilities.AlreadyExistsException;
 import utilities.NotFoundException;
 
@@ -29,10 +27,12 @@ public class Manager extends User {
 		return getProduct() != null ? ((Assembly) getProduct()).getProductTree() : null;
 	}
 
-	public void printProductTree() {
+	public String getProductTreeString() {
+		String str = "";
 		if (getProduct() != null) {
-			((Assembly) product).printProduct(getProductTree(), 0);
+			str += ((Assembly) product).getProductString(getProductTree(), 0, str);
 		}
+		return str;
 	}
 
 	public void addAnotherProductToProduct(Product anotherProduct) throws NotFoundException {
@@ -112,7 +112,8 @@ public class Manager extends User {
 		return managerJson;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson, ProductRepository productRepository) throws NotFoundException {
+	public static User parseJson(org.json.simple.JSONObject userJson, IProductRepository productRepository)
+			throws NotFoundException {
 		String userName = (String) userJson.get("Username");
 		String password = (String) userJson.get("password");
 		int id = ((Long) userJson.get("Id")).intValue();
@@ -129,15 +130,16 @@ public class Manager extends User {
 		if (employeesJson.size() > 0) {
 			employeesJson.forEach(entry -> {
 				try {
-					employees.add(Employee.parseJson((org.json.simple.JSONObject) entry,productRepository));
+					employees.add(Employee.parseJson((org.json.simple.JSONObject) entry, productRepository));
 				} catch (NotFoundException e) {
-					System.out.println(e.getMessage()); ;
+					System.out.println(e.getMessage());
+					;
 				}
 			});
 		}
 		Manager manager = new Manager(id, userName, password);
 		manager.setEmployees(employees);
-		 assembly = productRepository.findAssemblyByNumber(assembly.getNumber());
+		assembly = productRepository.findAssemblyByNumber(assembly.getNumber());
 		manager.setProduct(assembly);
 		return manager;
 	}

@@ -1,19 +1,19 @@
 package controllers;
 
 import java.util.List;
+import data_access.IProductRepository;
+import data_access.IUserRepository;
 import data_access.InputOutputOperations;
-import data_access.ProductRepository;
-import data_access.UserRepository;
 import domain.*;
 import utilities.AlreadyExistsException;
 import utilities.CatalogueEntry;
 import utilities.NotFoundException;
 import utilities.PasswordIncorrectException;
 
-public class ProductManagementFunctions {
+public class ProductManagementFunctions implements IProductManagementFunctions {
 
-	private ProductRepository productRepository;
-	private UserRepository userRepository;
+	private IProductRepository productRepository;
+	private IUserRepository userRepository;
 	private InputOutputOperations io;
 
 	public ProductManagementFunctions(InputOutputOperations io) {
@@ -22,7 +22,7 @@ public class ProductManagementFunctions {
 		this.userRepository = io.inputUsers();
 	}
 
-	public ProductRepository getProductRepository() {
+	public IProductRepository getProductRepository() {
 		return productRepository;
 	}
 
@@ -30,12 +30,12 @@ public class ProductManagementFunctions {
 			String password, User currentUser) throws NotFoundException, AlreadyExistsException {
 		CatalogueEntry entry = productRepository.findCatalogueEntryByNumber(catalogueNumberForNewPart);
 		Product newPart = new Part(entry);
-		if(userRepository.existUserName(username))
-			throw new AlreadyExistsException("employee already exist");
-		User user = new Employee(username,password);
+		if (userRepository.existUserName(username))
+			throw new AlreadyExistsException("This employee already exists.");
+		User user = new Employee(username, password);
 		userRepository.save(user);
-		Product assembly = productRepository.findAssemblyByNumber(((Manager)currentUser).getProduct().getNumber());
-		((Assembly)assembly).addProduct(newPart);
+		Product assembly = productRepository.findAssemblyByNumber(((Manager) currentUser).getProduct().getNumber());
+		((Assembly) assembly).addProduct(newPart);
 		((Manager) currentUser).createEmployeeAndAssignPart(user, newPart);
 		((Manager) currentUser).addAnotherProductToProduct(newPart);
 	}
@@ -43,8 +43,8 @@ public class ProductManagementFunctions {
 	public void createAssemblyAndAssignToManagerForAssemblyOfManager(String newAssemblyName, int newAssemblyNumber,
 			int managerNumber, User currentUser) throws NotFoundException, AlreadyExistsException {
 
-		if(productRepository.isAssemblyExistByNameAndNumber(newAssemblyName,newAssemblyNumber))
-			throw new AlreadyExistsException("assembly already exist");
+		if (productRepository.isAssemblyExistByNameAndNumber(newAssemblyName, newAssemblyNumber))
+			throw new AlreadyExistsException("This assembly already exists.");
 		Product newAssembly = new Assembly(newAssemblyName, newAssemblyNumber);
 		User manager = userRepository.findManagerById(managerNumber);
 		((Manager) currentUser).addAnotherProductToProduct(newAssembly);
@@ -63,22 +63,24 @@ public class ProductManagementFunctions {
 		}
 	}
 
-	public void printCatalogues() {
+	public String getCataloguesString() {
+		String str = "";
 		for (CatalogueEntry entry : productRepository.getEntries()) {
-			System.out.println("Number: " + entry.getNumber());
-			System.out.println("Name: " + entry.getName());
-			System.out.println("Cost: " + entry.getCost());
-			System.out.println();
+			str += "\nNumber: " + entry.getNumber();
+			str += "\nName: " + entry.getName();
+			str += "\nCost: " + entry.getCost() + "\n";
 		}
+		return str;
 	}
 
-	public void printAllAssemblies() {
+	public String getAllAssembliesString() {
+		String str = "";
 		for (Product assembly : productRepository.findAllAssemblies()) {
-			System.out.println("Number: " + assembly.getNumber());
-			System.out.println("Name: " + assembly.getName());
-			System.out.println("Cost: " + assembly.getCost());
-			System.out.println();
+			str += "\nNumber: " + assembly.getNumber();
+			str += "\nName: " + assembly.getName();
+			str += "\nCost: " + assembly.getCost() + "\n";
 		}
+		return str;
 	}
 
 	public void createCatalogueEntryForManager(int number, String name, double cost) throws AlreadyExistsException {
@@ -95,59 +97,65 @@ public class ProductManagementFunctions {
 		io.outputProducts(productRepository);
 	}
 
-	public UserRepository getUserRepository() {
+	public IUserRepository getUserRepository() {
 		return userRepository;
 	}
 
-	public User createManagerForAdmin(String username, String password, User currentUser) throws AlreadyExistsException {
+	public User createManagerForAdmin(String username, String password, User currentUser)
+			throws AlreadyExistsException {
 		User manager = ((Admin) currentUser).createManager(username, password);
 		userRepository.save(manager);
 		return manager;
 	}
 
-	public void printProductTreeOfManager(User manager) {
-		((Manager) manager).printProductTree();
+	public String getProductTreeStringOfManager(User manager) {
+		return ((Manager) manager).getProductTreeString();
 	}
 
-	public void printAllManagersForAdmin(User admin) {
+	public String getAllManagersStringForAdmin(User admin) {
 		List<User> managers = ((Admin) admin).getManagers();
+		String str = "";
 		for (User manager : managers) {
-			System.out.println(manager.getId() + ": " + manager.getUsername());
+			str += manager.getId() + ": " + manager.getUsername() + "\n";
 		}
-		System.out.println();
+		return str;
 	}
 
-	public void printAllEmployeesForAdmin(User admin) {
+	public String getAllEmployeesStringForAdmin(User admin) {
 		List<User> employees = ((Admin) admin).getAllEmployees();
+		String str = "";
 		for (User employee : employees) {
-			System.out.println(employee.getId() + ": " + employee.getUsername());
+			str += employee.getId() + ": " + employee.getUsername() + "\n";
 		}
-		System.out.println();
+		return str;
 	}
 
-	public void printAllProductTreesForAdmin(User admin) {
+	public String getAllProductTreesStringForAdmin(User admin) {
 		List<User> managers = ((Admin) admin).getManagers();
+		String str = "";
 		for (User manager : managers) {
-			((Manager) manager).printProductTree();
-			System.out.println();
+			str += ((Manager) manager).getProductTreeString() + "\n";
 		}
+		return str;
 	}
 
-	public void printEmployeesOfManager(User currentUser) {
+	public String getEmployeesStringOfManager(User currentUser) {
 		List<User> employees = ((Manager) currentUser).getEmployees();
+		String str = "";
 		for (User employee : employees) {
-			System.out.println(employee.getId() + ": " + employee.getUsername());
-			System.out.println();
+			str += employee.getId() + ": " + employee.getUsername() + "\n";
 		}
+		return str;
 	}
 
-	public void printAllManagersWithoutProducts() {
+	public String getAllManagersWithoutProductsString() {
 		List<User> managers = userRepository.findManagers();
+		String str = "";
 		for (User manager : managers) {
 			if (((Manager) manager).getProduct() == null)
-				System.out.println(manager.getId() + ": " + manager.getUsername());
+				str += manager.getId() + ": " + manager.getUsername() + "\n";
 		}
-		System.out.println();
+		return str;
 	}
 
 	public User getCurrentUser(String username, String password) throws NotFoundException, PasswordIncorrectException {

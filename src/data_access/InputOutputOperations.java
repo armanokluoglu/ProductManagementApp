@@ -20,7 +20,7 @@ public class InputOutputOperations {
 	public InputOutputOperations() {
 	}
 
-	public void outputProducts(ProductRepository productRepository) {
+	public void outputProducts(IProductRepository productRepository) {
 		JSONObject productsJSON = new JSONObject();
 		JSONObject assembliesAndPartsJson = getProductJson(productRepository);
 		JSONObject catalogEntriesJson = getCatalogueEntriesJson(productRepository);
@@ -50,7 +50,7 @@ public class InputOutputOperations {
 		}
 	}
 
-	private JSONObject getProductJson(ProductRepository productRepository) {
+	private JSONObject getProductJson(IProductRepository productRepository) {
 		JSONObject productsJSON = new JSONObject();
 		List<JSONObject> assembliesJson = new ArrayList<>();
 
@@ -58,12 +58,12 @@ public class InputOutputOperations {
 		for (Product product : assemblies) {
 			assembliesJson.add(((Assembly) product).getProductTree());
 		}
-		
+
 		productsJSON.put("ASSEMBLIES", assembliesJson);
 		return productsJSON;
 	}
 
-	private JSONObject getCatalogueEntriesJson(ProductRepository productRepository) {
+	private JSONObject getCatalogueEntriesJson(IProductRepository productRepository) {
 		JSONObject entriesJson = new JSONObject();
 		List<CatalogueEntry> entries = productRepository.getEntries();
 		List<JSONObject> entriesJsonList = new ArrayList<>();
@@ -74,7 +74,7 @@ public class InputOutputOperations {
 		return entriesJson;
 	}
 
-	public void outputUsers(UserRepository userRepository) {
+	public void outputUsers(IUserRepository userRepository) {
 		JSONObject usersJson = new JSONObject();
 		List<User> admins = userRepository.findAdmins();
 		List<JSONObject> adminsJson = new ArrayList<>();
@@ -110,7 +110,7 @@ public class InputOutputOperations {
 //		System.out.println(str);
 //	}
 
-	public ProductRepository inputProducts() {
+	public IProductRepository inputProducts() {
 		JSONParser jsonParser = new JSONParser();
 
 		try (FileReader reader = new FileReader("products.json")) {
@@ -153,16 +153,16 @@ public class InputOutputOperations {
 		return products;
 	}
 
-	public UserRepository inputUsers() {
-		ProductRepository productRepository = inputProducts();
+	public IUserRepository inputUsers() {
+		IProductRepository productRepository = inputProducts();
 		JSONParser jsonParser = new JSONParser();
 
 		try (FileReader reader = new FileReader("users.json")) {
 			Object obj = jsonParser.parse(reader);
 			org.json.simple.JSONObject usersJson = (org.json.simple.JSONObject) obj;
 			org.json.simple.JSONArray admins = (org.json.simple.JSONArray) usersJson.get("ALLUSERS");
-			List<User> users = parseUserArray(admins,productRepository);
-			UserRepository repository = new UserRepository(users);
+			List<User> users = parseUserArray(admins, productRepository);
+			IUserRepository repository = new UserRepository(users);
 			User.setId_counter(repository.findBiggestId() + 1);
 			return repository;
 		} catch (FileNotFoundException e) {
@@ -175,10 +175,10 @@ public class InputOutputOperations {
 		return null;
 	}
 
-	private List<User> parseUserArray(org.json.simple.JSONArray usersJson,ProductRepository productRepository) {
+	private List<User> parseUserArray(org.json.simple.JSONArray usersJson, IProductRepository productRepository) {
 		List<User> admins = new ArrayList<>();
 		List<User> users = new ArrayList<>();
-		usersJson.forEach(entry -> admins.add(Admin.parseJson((org.json.simple.JSONObject) entry,productRepository)));
+		usersJson.forEach(entry -> admins.add(Admin.parseJson((org.json.simple.JSONObject) entry, productRepository)));
 		for (User admin : admins) {
 			users.addAll(((Admin) admin).getManagers());
 			users.addAll(((Admin) admin).getAllEmployees());

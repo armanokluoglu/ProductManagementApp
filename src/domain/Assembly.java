@@ -1,7 +1,5 @@
 package domain;
 
-import java.lang.ref.PhantomReference;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,39 +53,42 @@ public class Assembly extends Product {
 		return productTree;
 	}
 
-	public void printProduct(JSONObject json, int indentation) {
+	public String getProductString(JSONObject json, int indentation, String str) {
 		String indentString = new String(new char[indentation]).replace("\0", "  ");
 		String name = (String) json.get("name");
 		int number = (int) json.get("number");
 		double cost = (double) json.get("cost");
 		StatusState status = (StatusState) json.get("status");
-		System.out.println(indentString + "Name: " + name);
-		System.out.println(indentString + "Number: " + number);
-		System.out.println(indentString + "Cost: " + cost);
-		System.out.println(indentString + "Status: " + status.toString());
+		str += indentString + "Name: " + name + "\n";
+		str += indentString + "Number: " + number + "\n";
+		str += indentString + "Cost: " + cost + "\n";
+		str += indentString + "Status: " + status.toString() + "\n";
 
 		if (json.has("PARTS")) {
 			JSONArray parts = json.optJSONArray("PARTS");
-			printProducts(parts, indentString, indentation, "Parts");
+			str = fillStringWithProducts(parts, indentString, indentation, "Parts", str);
 		}
 		if (json.has("ASSEMBLIES")) {
 			JSONArray assemblies = json.optJSONArray("ASSEMBLIES");
-			printProducts(assemblies, indentString, indentation, "Assemblies");
+			str = fillStringWithProducts(assemblies, indentString, indentation, "Assemblies", str);
 		}
+		return str;
 	}
 
-	private void printProducts(JSONArray products, String indentString, int indentation, String print) {
+	private String fillStringWithProducts(JSONArray products, String indentString, int indentation, String print,
+			String str) {
 		if (products != null) {
-			System.out.println(indentString + print + ": " + (products.length() == 0 ? "None" : ""));
+			str += indentString + print + ": " + (products.length() == 0 ? "None" : "") + "\n";
 			for (int i = 0; i < products.length(); i++) {
 				JSONObject product = (JSONObject) products.get(i);
-				printProduct(product, indentation + 1);
+				str = getProductString(product, indentation + 1, str);
 				if (i != products.length() - 1)
-					System.out.println();
+					str += "\n";
 			}
 		} else {
-			System.out.println(indentString + print + ": None");
+			str += indentString + print + ": None\n";
 		}
+		return str;
 	}
 
 	@Override
@@ -138,23 +139,24 @@ public class Assembly extends Product {
 			assemblies.forEach(entry -> products.add(Assembly.parseJson((org.json.simple.JSONObject) entry)));
 		}
 		Assembly assembly = new Assembly(name, number);
-		for(Product product:products)
+		for (Product product : products)
 			assembly.addProduct(product);
 		return assembly;
 	}
-	public List<Product> getAllProductsSeperatly(){
+
+	public List<Product> getAllProductsSeperatly() {
 		List<Product> allProducts = new ArrayList<>();
-		for(Product product:products){
-			if(product instanceof Part)
+		for (Product product : products) {
+			if (product instanceof Part)
 				allProducts.add(product);
-			if(product instanceof Assembly)
-				allProducts.addAll(((Assembly)product).getAllProductsSeperatly());
+			if (product instanceof Assembly)
+				allProducts.addAll(((Assembly) product).getAllProductsSeperatly());
 		}
 		allProducts.add(this);
 		return allProducts;
 	}
 
-	public List<Product> getAssembliesInProducts(){
+	public List<Product> getAssembliesInProducts() {
 		List<Product> assemblies = new ArrayList<>();
 		for (Product product : products) {
 			if (product instanceof Assembly)
@@ -165,15 +167,15 @@ public class Assembly extends Product {
 		assemblies.add(this);
 		return assemblies;
 	}
-	public List<Product> getPartsInProducts(){
+
+	public List<Product> getPartsInProducts() {
 		List<Product> assemblies = getAssembliesInProducts();
-		List<Product> parts= new ArrayList<>();
+		List<Product> parts = new ArrayList<>();
 		for (Product product : assemblies) {
-			for(Product product1:((Assembly)product).getProducts()){
+			for (Product product1 : ((Assembly) product).getProducts()) {
 				if (product1 instanceof Part)
 					parts.add(product1);
 			}
-
 
 		}
 		return parts;

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import data_access.ProductRepository;
+import data_access.IProductRepository;
 import org.json.JSONObject;
 import utilities.NotFoundException;
 
@@ -88,7 +87,7 @@ public class Admin extends User {
 		this.managers = managers;
 	}
 
-	public static User parseJson(org.json.simple.JSONObject userJson, ProductRepository productRepository) {
+	public static User parseJson(org.json.simple.JSONObject userJson, IProductRepository productRepository) {
 		String userName = (String) userJson.get("Username");
 		String password = (String) userJson.get("password");
 		int id = ((Long) userJson.get("Id")).intValue();
@@ -97,7 +96,7 @@ public class Admin extends User {
 		if (managersJson.size() > 0) {
 			managersJson.forEach(entry -> {
 				try {
-					managers.add(Manager.parseJson((org.json.simple.JSONObject) entry,productRepository));
+					managers.add(Manager.parseJson((org.json.simple.JSONObject) entry, productRepository));
 				} catch (NotFoundException e) {
 					System.out.println(e.getMessage());
 				}

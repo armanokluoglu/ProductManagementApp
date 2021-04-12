@@ -5,7 +5,6 @@ import domain.Part;
 import domain.Product;
 import utilities.CatalogueEntry;
 import utilities.NotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class ProductRepository implements IProductRepository {
 		this.entries = entries;
 	}
 
-	public List<Product> findAllAssemblies(){
+	public List<Product> findAllAssemblies() {
 		List<Product> assemblies = new ArrayList<>();
 		for (Product product : products) {
 			if (product instanceof Assembly)
@@ -27,11 +26,12 @@ public class ProductRepository implements IProductRepository {
 		}
 		return assemblies;
 	}
-	public List<Product> findAllParts(){
+
+	public List<Product> findAllParts() {
 		List<Product> assemblies = findAllAssemblies();
-		List<Product> parts= new ArrayList<>();
+		List<Product> parts = new ArrayList<>();
 		for (Product product : assemblies) {
-			parts.addAll(((Assembly)product).getPartsInProducts());
+			parts.addAll(((Assembly) product).getPartsInProducts());
 		}
 		return parts;
 	}
@@ -46,8 +46,8 @@ public class ProductRepository implements IProductRepository {
 
 	public Product findPartByNumber(int number) throws NotFoundException {
 		List<Product> parts = findAllParts();
-		for(Product product:parts){
-			if(product instanceof Part && product.getNumber()==number)
+		for (Product product : parts) {
+			if (product instanceof Part && product.getNumber() == number)
 				return product;
 		}
 		throw new NotFoundException("part not found");
@@ -87,17 +87,17 @@ public class ProductRepository implements IProductRepository {
 		return entry;
 	}
 
-	public boolean isAssemblyExistByNameAndNumber(String name,int number){
-		for(Product product:findAllAssemblies()){
-			if(product.getName().equals(name) && product.getNumber()==number)
+	public boolean isAssemblyExistByNameAndNumber(String name, int number) {
+		for (Product product : findAllAssemblies()) {
+			if (product.getName().equals(name) && product.getNumber() == number)
 				return true;
 		}
 		return false;
 	}
 
-	public boolean isCatalogEntryExistByNameAndId(String name,int number){
-		for(CatalogueEntry entry:entries){
-			if(entry.getName().equals(name) && entry.getNumber()==number)
+	public boolean isCatalogEntryExistByNameAndId(String name, int number) {
+		for (CatalogueEntry entry : entries) {
+			if (entry.getName().equals(name) && entry.getNumber() == number)
 				return true;
 		}
 		return false;
